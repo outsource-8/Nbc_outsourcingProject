@@ -5,19 +5,18 @@ import lombok.Getter;
 import java.time.LocalTime;
 
 @Getter
-public class StoreSaveResponse {
+public class StoreResponse {
     private final String name;
     private final String storeInfo;
     private final int minOrderAmount;
-    private final LocalTime opened;
     private final LocalTime closed;
+    private final LocalTime opened;
 
-    public StoreSaveResponse(String name, String storeInfo, int minOrderAmount, LocalTime opened, LocalTime closed) {
+    public StoreResponse(String name, String storeInfo, int minOrderAmount, LocalTime closed, LocalTime opened) {
         this.name = name;
         this.storeInfo = storeInfo;
         this.minOrderAmount = minOrderAmount;
-        this.opened = opened;
         this.closed = closed;
+        this.opened = opened;
     }
-
 }
