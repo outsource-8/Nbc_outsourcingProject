@@ -2,6 +2,7 @@ package com.example.nbc_outsourcingproject.store;
 
 import com.example.nbc_outsourcingproject.store.common.exception.UnauthorizedException;
 import com.example.nbc_outsourcingproject.store.store.dto.request.StoreSaveRequest;
+import com.example.nbc_outsourcingproject.store.store.dto.response.StoreResponse;
 import com.example.nbc_outsourcingproject.store.store.dto.response.StoreSaveResponse;
 import com.example.nbc_outsourcingproject.store.store.entity.FakeUser;
 import com.example.nbc_outsourcingproject.store.store.entity.Store;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -78,4 +80,24 @@ public class StoreOwnerServiceTest {
         assertEquals("Owner만 가게를 생성할 수 있습니다.", exception.getMessage());
     }
 
+    @Test
+    public void OWNER가_소유한_가게를_조회한다(){
+        //given
+        FakeUser fakeUser = new FakeUser(1L, "사용자1", "OWNER1");
+
+        List<Store> storeList = List.of(
+                new Store(fakeUser, "name1", "address1", 1000, "storeInfo1", LocalTime.of(14, 30, 45), LocalTime.of(14, 30, 45)),
+                new Store(fakeUser, "test1", "address2", 2000, "storeInfo2", LocalTime.of(15, 30, 45), LocalTime.of(14, 30, 45))
+        );
+
+        given(storeRepository.findAllByFakeUserId(fakeUser.getId())).willReturn(storeList);
+
+        //when
+        List<StoreResponse> response = storeOwnerService.getStoresMine(fakeUser.getId());
+
+        //then
+        assertNotNull(response);
+        assertEquals(2, response.size());
+
+    }
 }
