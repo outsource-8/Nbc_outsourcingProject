@@ -21,7 +21,7 @@ public class UserService {
                 ()-> new InvalidRequestException("해당 유저 없습니다.")
         );
 
-        if (passwordEncoder.matches(updatePassword.getOldPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(updatePassword.getOldPassword(), user.getPassword())) {
             throw new InvalidRequestException("잘못된 비밀번호 입니다.");
         }
 

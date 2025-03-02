@@ -53,12 +53,13 @@ public class JwtUtil {
     }
 
 
-    public String createRefreshToken(Long userId, String email, UserRole userRole) {
+//    public String createRefreshToken(Long userId, String email, UserRole userRole) {
+    public String createRefreshToken(Long userId) {
         Date date = new Date();
         return BEARER_PREFIX + Jwts.builder()
                 .setSubject(String.valueOf(userId))
-                .claim("email", email)
-                .claim("userRole", userRole.name())
+//                .claim("email", email)
+//                .claim("userRole", userRole.name())
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
                 .signWith(key, signatureAlgorithm)
@@ -69,9 +70,9 @@ public class JwtUtil {
         log.info("로그인시 생성되는 토큰: {}", tokenValue);
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             log.info("토큰에 bearer가 있는지 확인: {}", tokenValue);
-            String removetToken = tokenValue.substring(7);
-            log.info("섭스트링 지운값 확인: {}",removetToken);
-            return removetToken;
+            String removeToken = tokenValue.substring(7);
+            log.info("섭스트링 지운값 확인: {}",removeToken);
+            return removeToken;
         }
         log.info("안지워졋다면 : {}", tokenValue);
         throw new ServerException("Not Found Token");
