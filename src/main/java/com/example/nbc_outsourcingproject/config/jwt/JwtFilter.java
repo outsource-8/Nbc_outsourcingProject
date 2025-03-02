@@ -53,7 +53,7 @@ public class JwtFilter implements Filter {
         log.info("bearer 가 없어야 맞음 {}", jwt);
         Cookie[] cookies = httpRequest.getCookies();
         if (cookies == null) {
-            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유호하지 않은 접근입니다");
+            httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 접근입니다");
             return;
         }
 
