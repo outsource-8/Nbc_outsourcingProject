@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
     // 가게 다건 조회
@@ -17,4 +19,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
             @Param("name") String name,
             Pageable pageable
     );
+
+    // 소유한 가게 다건 조회
+    @Query("SELECT s From Store s JOIN FETCH s.fakeUser WHERE s.fakeUser.Id = :userId")
+    List<Store> findAllByFakeUserId(@Param("userId") Long userId);
 }
