@@ -38,7 +38,7 @@ public class JwtFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
-
+        log.info("확인 {}", httpRequest.getHeader("Authorization"));
         String bearerJwt = httpRequest.getHeader("Authorization");
         log.info("지워진 상태의 값에 bearer가 붙어서 출력: {}", bearerJwt);
 
@@ -64,6 +64,7 @@ public class JwtFilter implements Filter {
         }
 
         try {
+
             Claims claims = jwtUtil.extractToken(jwt);
             if (claims == null) {
                 httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "유효한 JWT 토큰이 아닙니다");
