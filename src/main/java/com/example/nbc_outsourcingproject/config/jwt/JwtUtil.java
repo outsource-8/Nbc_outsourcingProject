@@ -38,25 +38,27 @@ public class JwtUtil {
     public String createAccessToken(Long userId, String email, UserRole userRole) {
         Date date = new Date();
 
-        return BEARER_PREFIX + Jwts.builder()
+        String token = BEARER_PREFIX + Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .claim("email", email)
-                .claim("userRole", userRole)
+                .claim("userRole", userRole.name())
                 .setExpiration(new Date(date.getTime() + ACCESS_TOKEN_TIME))
                 .setIssuedAt(date)
                 .signWith(key, signatureAlgorithm)
                 .compact();
 
-//        log.info("Access Token 생성: {}", token);
+        log.info("Access Token 생성: {}", token);
 //
-//        return token;
+        return token;
     }
 
 
-    public String createRefreshToken(Long userId) {
+    public String createRefreshToken(Long userId, String email, UserRole userRole) {
         Date date = new Date();
         return BEARER_PREFIX + Jwts.builder()
                 .setSubject(String.valueOf(userId))
+                .claim("email", email)
+                .claim("userRole", userRole.name())
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
                 .signWith(key, signatureAlgorithm)
@@ -67,7 +69,9 @@ public class JwtUtil {
         log.info("로그인시 생성되는 토큰: {}", tokenValue);
         if (StringUtils.hasText(tokenValue) && tokenValue.startsWith(BEARER_PREFIX)) {
             log.info("토큰에 bearer가 있는지 확인: {}", tokenValue);
-            return tokenValue.substring(7);
+            String removetToken = tokenValue.substring(7);
+            log.info("섭스트링 지운값 확인: {}",removetToken);
+            return removetToken;
         }
         log.info("안지워졋다면 : {}", tokenValue);
         throw new ServerException("Not Found Token");

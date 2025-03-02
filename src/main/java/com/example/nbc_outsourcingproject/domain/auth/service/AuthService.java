@@ -60,7 +60,7 @@ public class AuthService {
             throw new AuthException("비밀번호가 일치하지 않습니다");
         }
         String accessToken = jwtUtil.createAccessToken(user.getId(), user.getEmail(),user.getUserRole());
-        String refreshToken = jwtUtil.createRefreshToken(user.getId());
+        String refreshToken = jwtUtil.createRefreshToken(user.getId(), user.getEmail(),user.getUserRole());
 
         servletResponse.setHeader("Authorization", accessToken);
 
