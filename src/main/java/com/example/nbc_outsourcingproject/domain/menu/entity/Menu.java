@@ -40,7 +40,15 @@ public class Menu {
     public Menu() {
     }
 
-    public Menu(Category category, String name, int price, String info) {
+    public Menu(Store store, Category category, String name, int price, String info) {
+        this.store = store;
+        this.category = category;
+        this.name = name;
+        this.price = price;
+        this.info = info;
+    }
+
+    public Menu update(Category category, String name, int price, String info){
         this.category = category;
         this.name = name;
         this.price = price;
