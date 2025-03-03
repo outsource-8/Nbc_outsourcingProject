@@ -46,6 +46,7 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.info = info;
+        this.isDeleted = false;
     }
 
     public Menu update(Category category, String name, int price, String info){
@@ -53,5 +54,10 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.info = info;
+        return this;
+    }
+
+    public void deleteMenu(){
+        this.isDeleted = true;
     }
 }
