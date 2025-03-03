@@ -1,7 +1,9 @@
 package com.example.nbc_outsourcingproject.store.store.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,16 +23,18 @@ public class StoreSaveRequest {
     @NotBlank (message = "주소를 입력해 주세요.")
     private String address;
 
-    @NotBlank(message = "주문 최소 금액을 입력해 주세요.")
+    @NotNull(message = "주문 최소 금액을 입력해 주세요.")
     @Min(value = 0, message = "최소 주문 금액은 0보다 커야 합니다.")
     private int minOrderAmount;
 
     private String storeInfo;
 
-    @NotBlank(message = "오픈 시간을 입력해주세요.")
+    @NotNull(message = "오픈 시간을 입력해주세요.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:MM")
     private LocalTime opened;
 
-    @NotBlank(message = "마감 시간을 입력해주세요.")
+    @NotNull(message = "마감 시간을 입력해주세요.")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:MM")
     private LocalTime closed;
 
 }
