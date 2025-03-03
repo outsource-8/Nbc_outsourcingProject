@@ -22,7 +22,7 @@ public class MenuSerivce {
     private final MenuRepository menuRepository;
 
 
-    public void createMenu(Long storeId, String category, String name, int price, String info) {
+    public void createMenu(Long storeId, Long authUser, String category, String name, int price, String info) {
         //TODO: storeId가 존재하는지 확인 필요 + 요청한 사람이 store 주인인지 확인 필요
         if (false) {
             //TODO: store 존재 x 예외 처리
@@ -44,7 +44,7 @@ public class MenuSerivce {
 
 
     @Transactional
-    public MenuResponse updateMenu(Long storeId, Long menuId, String category, String name, int price, String info) {
+    public MenuResponse updateMenu(Long storeId, Long authUser, Long menuId, String category, String name, int price, String info) {
         //TODO: storeId가 존재하는지 확인 필요 + 요청한 사람이 store 주인인지 확인 필요
         if (false) {
             //TODO: store 존재 x 예외 처리
@@ -57,7 +57,7 @@ public class MenuSerivce {
 
 
     @Transactional(readOnly = true)
-    public List<MenuResponse> getMenus(Long storeId, Long menuId) {
+    public List<MenuResponse> getMenus(Long storeId, Long authUser, Long menuId) {
         //TODO: storeId가 존재하는지 확인 필요 + 요청한 사람이 store 주인인지 확인 필요
         if (false) {
             //TODO: store 존재 x 예외 처리
@@ -81,14 +81,14 @@ public class MenuSerivce {
     }
 
 
-    public void deleteMenu(Long storeId, Long menuId) {
+    public void deleteMenu(Long storeId, Long authUser, Long menuId) {
         //TODO: storeId가 존재하는지 확인 필요 + 요청한 사람이 store 주인인지 확인 필요
         if (false) {
             //TODO: store 존재 x 예외 처리
         }
 
         Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
-        menuRepository.delete(getMenu);
+        getMenu.deleteMenu();
     }
 
 
