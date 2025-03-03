@@ -3,9 +3,12 @@ package com.example.nbc_outsourcingproject.domain.menu.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Entity
 @Getter
+@DynamicInsert
 @Table(uniqueConstraints = {
         @UniqueConstraint(
                 name = "unique_store_name",
@@ -34,6 +37,7 @@ public class Menu {
 
     private String info;
 
+    @ColumnDefault("false")
     private boolean isDeleted;
 
 
@@ -46,7 +50,6 @@ public class Menu {
         this.name = name;
         this.price = price;
         this.info = info;
-        this.isDeleted = false;
     }
 
     public Menu update(Category category, String name, int price, String info){
