@@ -1,10 +1,12 @@
 package com.example.nbc_outsourcingproject.store.store.controller;
 
+import com.example.nbc_outsourcingproject.store.store.dto.request.StoreUpdateRequest;
 import com.example.nbc_outsourcingproject.store.store.dto.response.StoreResponse;
 import com.example.nbc_outsourcingproject.store.store.entity.FakeUser;
 import com.example.nbc_outsourcingproject.store.store.dto.request.StoreSaveRequest;
 import com.example.nbc_outsourcingproject.store.store.dto.response.StoreSaveResponse;
 import com.example.nbc_outsourcingproject.store.store.service.StoreOwnerService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,5 +35,16 @@ public class StoreOwnerController {
             @RequestParam() Long fakeUserId
     ){
         return ResponseEntity.ok(storeOwnerService.getStoresMine(fakeUserId));
+    }
+
+    // 가게 수정
+    @PatchMapping("/stores/mine/{storeId}")
+    public ResponseEntity<StoreResponse> updateStore(
+            FakeUser fakeUser,
+            @PathVariable Long storeId,
+            @Valid @RequestBody StoreUpdateRequest storeUpdateRequest
+    ){
+
+        return ResponseEntity.ok(storeOwnerService.updateStore(fakeUser,storeId,storeUpdateRequest));
     }
 }

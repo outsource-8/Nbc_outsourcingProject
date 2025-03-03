@@ -1,9 +1,11 @@
 package com.example.nbc_outsourcingproject.store.store.entity;
 
+import com.example.nbc_outsourcingproject.store.store.dto.request.StoreUpdateRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -62,5 +64,13 @@ public class Store {
         this.closed = closed;
     }
 
+    public void updateStoreInfo(@Valid StoreUpdateRequest request) {
+        this.name = request.getName();
+        this.address = request.getAddress();
+        this.minOrderAmount = request.getMinOrderAmount();
+        this.storeInfo = request.getStoreInfo();
+        this.opened = request.getOpened();
+        this.closed = request.getClosed();
+    }
 }
 
