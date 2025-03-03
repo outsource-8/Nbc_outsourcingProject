@@ -11,7 +11,7 @@ class MenuResponseTest {
     @Test
     void from() {
         //given & when
-        Menu menu = new Menu(Category.MAIN, "메뉴1", 12000, null);
+        Menu menu = new Menu(null, Category.MAIN, "메뉴1", 12000, null);
         MenuResponse from = MenuResponse.from(menu);
 
         //then
