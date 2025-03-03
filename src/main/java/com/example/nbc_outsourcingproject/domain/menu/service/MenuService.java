@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MenuSerivce {
+public class MenuService {
 
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
