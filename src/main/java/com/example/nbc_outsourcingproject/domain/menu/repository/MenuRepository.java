@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface MenuRepository extends JpaRepository<Menu,Long> {
+public interface MenuRepository extends JpaRepository<Menu, Long> {
 
 
     @Query("SELECT m FROM Menu m JOIN FETCH m.store WHERE m.store.id = :storeId")
@@ -14,6 +14,5 @@ public interface MenuRepository extends JpaRepository<Menu,Long> {
 
     @Query("SELECT m.store.id FROM Menu m WHERE m.id = :menuId")
     Long findByMenuIdForStoreId(Long menuId);
-
 
 }
