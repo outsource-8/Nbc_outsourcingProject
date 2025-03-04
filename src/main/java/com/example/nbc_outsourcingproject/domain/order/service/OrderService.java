@@ -1,6 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.order.service;
 
-import com.example.nbc_outsourcingproject.domain.delete.*;
+import com.example.nbc_outsourcingproject.domain.menu.service.MenuOwnerService;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
 import com.example.nbc_outsourcingproject.domain.order.entity.Order;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderMenuRepository;
@@ -24,7 +24,7 @@ public class OrderService {
     private final OrderMenuRepository orderMenuRepository;
     private final UserService userService;
     //    private final StoreService storeService;
-    private final MenuService menuService;
+    private final MenuOwnerService menuOwnerService;
 
     public Page<OrderResponse> getOrders(int page, int size) {
 
