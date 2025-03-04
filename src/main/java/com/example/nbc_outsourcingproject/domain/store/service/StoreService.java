@@ -25,6 +25,7 @@ public class StoreService {
         return stores.map(store -> new StoreResponse(
                 store.getName(),
                 store.getStoreInfo(),
+                store.getAddress(),
                 store.getMinOrderAmount(),
                 store.getClosed(),
                 store.getOpened()
