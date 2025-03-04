@@ -4,6 +4,8 @@ import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReview
 import com.example.nbc_outsourcingproject.domain.review.dto.response.CreateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.entity.Review;
 import com.example.nbc_outsourcingproject.domain.review.repository.ReviewRepository;
+import com.example.nbc_outsourcingproject.domain.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.store.service.StoreService;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,8 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final UserService userService;
+    private final StoreService storeService;
+    private final OrderService orderService;
 
     @Transactional
     public CreateReviewResponse createReview(CreateReviewRequest request, Long userId, Long storeId, Long orderId) {
