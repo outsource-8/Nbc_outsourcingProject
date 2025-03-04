@@ -60,5 +60,14 @@ public class Store {
         this.closed = closed;
     }
 
+    public void updateInfo(String name, String address, int minOrderAmount, String storeInfo, LocalTime opened, LocalTime closed){
+        this.name = name;
+        this.address = address;
+        this.minOrderAmount = minOrderAmount;
+        this.storeInfo = storeInfo;
+        this.opened = opened;
+        this.closed = closed;
+    }
+
 }
 
