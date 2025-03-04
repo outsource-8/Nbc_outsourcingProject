@@ -1,9 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.store.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -24,7 +22,7 @@ public class Store {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private FakeUser fakeUser;
+    private User user;
 
     @NotBlank(message = "이름을 입력해주세요.")
     @Size(max = 20, message = "이름의 최대 길이는 20자 입니다.")
@@ -46,14 +44,14 @@ public class Store {
     private LocalTime closed;
 
     public Store(
-            FakeUser fakeUser,
+            User user,
             String name,
             String address,
             int minOrderAmount,
             String storeInfo,
             LocalTime opened,
             LocalTime closed) {
-        this.fakeUser = fakeUser;
+        this.user = user;
         this.name = name;
         this.address = address;
         this.minOrderAmount = minOrderAmount;
