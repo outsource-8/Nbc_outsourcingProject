@@ -1,6 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.menu.service;
 
-import com.example.nbc_outsourcingproject.domain.common.util.StoreOwnerValidator;
+import com.example.nbc_outsourcingproject.domain.common.util.OwnerValidator;
 import com.example.nbc_outsourcingproject.domain.menu.dto.MenuResponse;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Category;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
@@ -8,16 +8,12 @@ import com.example.nbc_outsourcingproject.domain.menu.exception.details.*;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
-import com.example.nbc_outsourcingproject.domain.store.service.StoreOwnerService;
-import com.example.nbc_outsourcingproject.domain.user.entity.User;
-import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,11 +22,11 @@ public class MenuOwnerService {
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
 
-    private final StoreOwnerValidator storeOwnerValidator;
+    private final OwnerValidator ownerValidator;
 
 
     public void createMenu(Long storeId, Long authUserId, String category, String name, int price, String info) {
-        storeOwnerValidator.validateStoreOwner(storeId, authUserId);
+        ownerValidator.validateStoreOwner(storeId, authUserId);
         Store store = storeRepository.findById(storeId).get();
 
         try {
@@ -49,7 +45,7 @@ public class MenuOwnerService {
 
     @Transactional
     public MenuResponse updateMenu(Long storeId, Long authUserId, Long menuId, String category, String name, int price, String info) {
-        storeOwnerValidator.validateStoreOwner(storeId, authUserId);
+        ownerValidator.validateStoreOwner(storeId, authUserId);
 
         Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
         Menu updateMenu = modifiedMenu(getMenu, category, name, price, info);
@@ -59,7 +55,7 @@ public class MenuOwnerService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> getMenus(Long storeId, Long authUserId, Long menuId) {
-        storeOwnerValidator.validateStoreOwner(storeId, authUserId);
+        ownerValidator.validateStoreOwner(storeId, authUserId);
 
         // 가게의 전체 메뉴
         if (menuId == null) {
@@ -80,7 +76,7 @@ public class MenuOwnerService {
 
 
     public void deleteMenu(Long storeId, Long authUserId, Long menuId) {
-        storeOwnerValidator.validateStoreOwner(storeId, authUserId);
+        ownerValidator.validateStoreOwner(storeId, authUserId);
         Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
         getMenu.deleteMenu();
     }
