@@ -13,13 +13,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 
+//TODO: cacheable 변경 필요
+
 @Component
 @RequiredArgsConstructor
-public class StoreOwnerValidator {
+public class OwnerValidator {
 
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    private final MenuRepository menuRepository;
 
 
     @Transactional(readOnly = true)
@@ -35,5 +36,7 @@ public class StoreOwnerValidator {
             throw new InvalidStoreOwner();
         }
     }
+
+
 
 }
