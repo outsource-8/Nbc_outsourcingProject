@@ -1,4 +1,4 @@
-package com.example.nbc_outsourcingproject.store.store.entity;
+package com.example.nbc_outsourcingproject.domain.store.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

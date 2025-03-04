@@ -1,16 +1,15 @@
-package com.example.nbc_outsourcingproject.store.store.service;
+package com.example.nbc_outsourcingproject.domain.store.service;
 
-import com.example.nbc_outsourcingproject.store.common.exception.InvalidRequestException;
-import com.example.nbc_outsourcingproject.store.common.exception.UnauthorizedException;
-import com.example.nbc_outsourcingproject.store.store.dto.response.StoreResponse;
-import com.example.nbc_outsourcingproject.store.store.entity.FakeUser;
-import com.example.nbc_outsourcingproject.store.store.entity.Store;
-import com.example.nbc_outsourcingproject.store.store.dto.request.StoreSaveRequest;
-import com.example.nbc_outsourcingproject.store.store.dto.response.StoreSaveResponse;
-import com.example.nbc_outsourcingproject.store.store.repository.StoreRepository;
+import com.example.nbc_outsourcingproject.domain.common.exception.InvalidRequestException;
+import com.example.nbc_outsourcingproject.domain.common.exception.UnauthorizedException;
+import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
+import com.example.nbc_outsourcingproject.domain.store.entity.FakeUser;
+import com.example.nbc_outsourcingproject.domain.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
+import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
+import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -1,10 +1,10 @@
 package com.example.nbc_outsourcingproject.store;
 
-import com.example.nbc_outsourcingproject.store.store.dto.response.StoreResponse;
-import com.example.nbc_outsourcingproject.store.store.entity.FakeUser;
-import com.example.nbc_outsourcingproject.store.store.entity.Store;
-import com.example.nbc_outsourcingproject.store.store.repository.StoreRepository;
-import com.example.nbc_outsourcingproject.store.store.service.StoreService;
+import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
+import com.example.nbc_outsourcingproject.domain.store.entity.FakeUser;
+import com.example.nbc_outsourcingproject.domain.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
+import com.example.nbc_outsourcingproject.domain.store.service.StoreService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
