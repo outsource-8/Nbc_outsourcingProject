@@ -1,10 +1,11 @@
 package com.example.nbc_outsourcingproject.store;
 
+import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
-import com.example.nbc_outsourcingproject.domain.store.entity.FakeUser;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.store.service.StoreService;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,8 +19,8 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 public class StoreServiceTest {
@@ -33,15 +34,15 @@ public class StoreServiceTest {
     @Test
     public void 이름을_입력하여_가게를_다_건_조회한다() {
         //given
-        FakeUser fakeUser = new FakeUser(1L, "사용자", "OWNER");
+        User user = new User(1L, "사용자", UserRole.OWNER);
         String storeName = "test";
         int page = 1;
         int size = 10;
         Pageable pageable = PageRequest.of(page - 1, size);
 
         List<Store> storeList = List.of(
-                new Store(fakeUser, "test1", "address2", 2000, "storeInfo2", LocalTime.of(15, 30, 45), LocalTime.of(14, 30, 45)),
-                new Store(fakeUser, "test2", "address2", 2000, "storeInfo2", LocalTime.of(18, 30, 45), LocalTime.of(14, 30, 45))
+                new Store(user, "test1", "address2", 2000, "storeInfo2", LocalTime.of(15, 30, 45), LocalTime.of(14, 30, 45)),
+                new Store(user, "test2", "address2", 2000, "storeInfo2", LocalTime.of(18, 30, 45), LocalTime.of(14, 30, 45))
         );
 
         Page<Store> storesPage = new PageImpl<>(storeList, pageable, storeList.size());
@@ -62,15 +63,15 @@ public class StoreServiceTest {
     @Test
     public void 이름을_입력하지_않으면_가게를_전체_조회한다() {
         //given
-        FakeUser fakeUser = new FakeUser(1L, "사용자", "OWNER");
+        User user = new User(1L, "사용자", UserRole.OWNER);
         int page = 1;
         int size = 10;
         Pageable pageable = PageRequest.of(page - 1, size);
 
         List<Store> storeList = List.of(
-                new Store(fakeUser, "name1", "address1", 1000, "storeInfo1", LocalTime.of(14, 30, 45), LocalTime.of(14, 30, 45)),
-                new Store(fakeUser, "test1", "address2", 2000, "storeInfo2", LocalTime.of(15, 30, 45), LocalTime.of(14, 30, 45)),
-                new Store(fakeUser, "test2", "address2", 2000, "storeInfo2", LocalTime.of(18, 30, 45), LocalTime.of(14, 30, 45))
+                new Store(user, "name1", "address1", 1000, "storeInfo1", LocalTime.of(14, 30, 45), LocalTime.of(14, 30, 45)),
+                new Store(user, "test1", "address2", 2000, "storeInfo2", LocalTime.of(15, 30, 45), LocalTime.of(14, 30, 45)),
+                new Store(user, "test2", "address2", 2000, "storeInfo2", LocalTime.of(18, 30, 45), LocalTime.of(14, 30, 45))
         );
 
         Page<Store> storesPage = new PageImpl<>(storeList, pageable, storeList.size());
