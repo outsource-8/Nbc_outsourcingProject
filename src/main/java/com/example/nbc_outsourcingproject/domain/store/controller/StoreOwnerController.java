@@ -1,10 +1,10 @@
-package com.example.nbc_outsourcingproject.store.store.controller;
+package com.example.nbc_outsourcingproject.domain.store.controller;
 
-import com.example.nbc_outsourcingproject.store.store.dto.response.StoreResponse;
-import com.example.nbc_outsourcingproject.store.store.entity.FakeUser;
-import com.example.nbc_outsourcingproject.store.store.dto.request.StoreSaveRequest;
-import com.example.nbc_outsourcingproject.store.store.dto.response.StoreSaveResponse;
-import com.example.nbc_outsourcingproject.store.store.service.StoreOwnerService;
+import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
+import com.example.nbc_outsourcingproject.domain.store.entity.FakeUser;
+import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
+import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
+import com.example.nbc_outsourcingproject.domain.store.service.StoreOwnerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

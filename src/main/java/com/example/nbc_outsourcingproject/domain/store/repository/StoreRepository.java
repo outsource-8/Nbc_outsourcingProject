@@ -1,6 +1,6 @@
-package com.example.nbc_outsourcingproject.store.store.repository;
+package com.example.nbc_outsourcingproject.domain.store.repository;
 
-import com.example.nbc_outsourcingproject.store.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.example.nbc_outsourcingproject.store.store.dto.response;
+package com.example.nbc_outsourcingproject.domain.store.dto.response;
 
 import lombok.Getter;
 
