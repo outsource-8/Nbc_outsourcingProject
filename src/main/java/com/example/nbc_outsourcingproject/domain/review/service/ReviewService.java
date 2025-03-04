@@ -2,6 +2,7 @@ package com.example.nbc_outsourcingproject.domain.review.service;
 
 import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.CreateReviewResponse;
+import com.example.nbc_outsourcingproject.domain.review.dto.response.ReadReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.entity.Review;
 import com.example.nbc_outsourcingproject.domain.review.repository.ReviewRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
@@ -9,6 +10,8 @@ import com.example.nbc_outsourcingproject.domain.store.service.StoreService;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,5 +48,14 @@ public class ReviewService {
                 .userId(review.getUser().getId())
                 .storeId(review.getStore().getId())
                 .build();
+    }
+
+    @Transactional(readOnly = true)
+    public Page<ReadReviewResponse> getReviewsByStoreId(Long storeId, Pageable pageable) {
+
+        Page<Review> reviews = reviewRepository.findByStoreId(storeId, pageable);
+
+        return reviews
+                .map(ReadReviewResponse::toDto);
     }
 }
