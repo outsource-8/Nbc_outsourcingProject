@@ -25,7 +25,7 @@ public class ReviewController {
             @PathVariable Long storeId,
             @RequestParam Long orderId,
             @RequestHeader("Authorization") String token
-            ) {
+    ) {
 
         if (token.startsWith("Bearer ")) {
             token = token.substring(7);
