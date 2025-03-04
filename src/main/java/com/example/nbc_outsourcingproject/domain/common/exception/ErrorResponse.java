@@ -1,4 +1,4 @@
-package com.example.nbc_outsourcingproject.domain.menu.exception;
+package com.example.nbc_outsourcingproject.domain.common.exception;
 
 import lombok.Builder;
 import lombok.Getter;
