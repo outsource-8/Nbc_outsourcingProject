@@ -1,6 +1,5 @@
 package com.example.nbc_outsourcingproject.domain.order.entity;
 
-import com.example.nbc_outsourcingproject.domain.delete.Menu;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,5 @@
 package com.example.nbc_outsourcingproject.domain.order.repository;
 
-import com.example.nbc_outsourcingproject.domain.delete.Menu;
 import com.example.nbc_outsourcingproject.domain.order.entity.OrderMenu;
 import org.springframework.data.jpa.repository.JpaRepository;
 
