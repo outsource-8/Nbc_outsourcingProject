@@ -89,6 +89,9 @@ public class JwtUtil {
                 .getBody();
     }
 
-    
+    public Long extractUserId(String token) {
+        Claims claims = extractToken(token);
+        return claims.get("userId", Long.class);
+    }
 }
 
