@@ -3,7 +3,7 @@ package com.example.nbc_outsourcingproject.domain.menu.service;
 import com.example.nbc_outsourcingproject.domain.menu.dto.MenuResponse;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Category;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
-import com.example.nbc_outsourcingproject.domain.menu.exception.*;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.*;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;

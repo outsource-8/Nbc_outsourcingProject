@@ -1,6 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.menu.entity;
 
-import com.example.nbc_outsourcingproject.domain.menu.exception.CategoryNotFoundException;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.CategoryNotFoundException;
 
 import java.util.Arrays;
 

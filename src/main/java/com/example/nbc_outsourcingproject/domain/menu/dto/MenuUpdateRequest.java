@@ -11,7 +11,7 @@ public class MenuUpdateRequest {
     private String name;
 
     @Min(value = 0, message = "음수 값을 넣을 수 없습니다.")
-    private int price;
+    private Integer price;
 
     private String info;
 
