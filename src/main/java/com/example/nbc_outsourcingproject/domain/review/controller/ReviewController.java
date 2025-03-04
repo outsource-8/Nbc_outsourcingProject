@@ -12,13 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/store/{storeId}/reviews")
 public class ReviewController {
 
     private final ReviewService reviewService;
 
     private final JwtUtil jwtUtil;
 
-    @PostMapping
+    @PostMapping(params = "orderId")
     public ResponseEntity<CreateReviewResponse> createReview(
             @RequestBody CreateReviewRequest request,
             @PathVariable Long storeId,
@@ -33,4 +34,5 @@ public class ReviewController {
         Long userId = jwtUtil.extractUserId(token);
         return new ResponseEntity<>(reviewService.createReview(request, userId, storeId, orderId), HttpStatus.CREATED);
     }
+
 }
