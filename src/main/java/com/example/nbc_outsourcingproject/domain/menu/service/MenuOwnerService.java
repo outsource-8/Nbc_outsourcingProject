@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.menu.service;
 
+import com.example.nbc_outsourcingproject.domain.common.util.StoreOwnerValidator;
 import com.example.nbc_outsourcingproject.domain.menu.dto.MenuResponse;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Category;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
@@ -7,6 +8,7 @@ import com.example.nbc_outsourcingproject.domain.menu.exception.details.*;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
+import com.example.nbc_outsourcingproject.domain.store.service.StoreOwnerService;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +23,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MenuOwnerService {
 
-    private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
 
+    private final StoreOwnerValidator storeOwnerValidator;
+
 
     public void createMenu(Long storeId, Long authUserId, String category, String name, int price, String info) {
-        storeValidate(storeId, authUserId);
+        storeOwnerValidator.validateStoreOwner(storeId, authUserId);
         Store store = storeRepository.findById(storeId).get();
 
         try {
@@ -46,7 +49,7 @@ public class MenuOwnerService {
 
     @Transactional
     public MenuResponse updateMenu(Long storeId, Long authUserId, Long menuId, String category, String name, int price, String info) {
-        storeValidate(storeId, authUserId);
+        storeOwnerValidator.validateStoreOwner(storeId, authUserId);
 
         Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
         Menu updateMenu = modifiedMenu(getMenu, category, name, price, info);
@@ -56,7 +59,7 @@ public class MenuOwnerService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> getMenus(Long storeId, Long authUserId, Long menuId) {
-        storeValidate(storeId, authUserId);
+        storeOwnerValidator.validateStoreOwner(storeId, authUserId);
 
         // 가게의 전체 메뉴
         if (menuId == null) {
@@ -77,24 +80,12 @@ public class MenuOwnerService {
 
 
     public void deleteMenu(Long storeId, Long authUserId, Long menuId) {
-        storeValidate(storeId, authUserId);
+        storeOwnerValidator.validateStoreOwner(storeId, authUserId);
         Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
         getMenu.deleteMenu();
     }
 
 
-    private void storeValidate(Long storeId, Long authUserId) {
-        if (!storeRepository.existsById(storeId)) {
-            throw new StoreNotFoundException();
-        }
-
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException());
-        User user = userRepository.findById(authUserId).orElseThrow();
-
-        if (!storeRepository.existsByIdAndUser(store, user)) {
-            throw new InvalidStoreOwner();
-        }
-    }
 
     private Menu modifiedMenu(Menu getMenu, String category, String name, Integer price, String info) {
         Category updateCategory = Category.of(category);
