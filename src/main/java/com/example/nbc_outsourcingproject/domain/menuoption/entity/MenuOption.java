@@ -2,6 +2,7 @@ package com.example.nbc_outsourcingproject.domain.menuoption.entity;
 
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 @Entity
@@ -17,8 +18,10 @@ public class MenuOption {
     @JoinColumn(name = "menu_id")
     private Menu menu;
 
+    @Column(nullable = false)
     private String text;
 
+    @Size(min = 0)
     private Integer price;
 
 
@@ -29,5 +32,11 @@ public class MenuOption {
         this.menu = menu;
         this.text = text;
         this.price = price;
+    }
+
+    public MenuOption updateOption(String text, Integer price) {
+        this.text = text;
+        this.price = price;
+        return this;
     }
 }

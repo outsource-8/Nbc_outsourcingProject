@@ -1,4 +1,13 @@
 package com.example.nbc_outsourcingproject.domain.menuoption.repository;
 
-public class MenuOptionRepository {
+import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+
+public interface MenuOptionRepository extends JpaRepository<MenuOption, Long> {
+
+    @Query("SELECT o FROM MenuOption o JOIN FETCH o.menu WHERE o.menu.id = :menuId")
+    List<MenuOption> findByMenuId(Long menuId);
 }

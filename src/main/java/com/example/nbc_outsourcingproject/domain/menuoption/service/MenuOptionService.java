@@ -1,7 +1,89 @@
 package com.example.nbc_outsourcingproject.domain.menuoption.service;
 
+import com.example.nbc_outsourcingproject.domain.common.util.OwnerValidator;
+import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.InvalidStoreMenuException;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.MenuNotFoundException;
+import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
+import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionResponse;
+import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
+import com.example.nbc_outsourcingproject.domain.menuoption.exception.details.MenuOptionNotFoundException;
+import com.example.nbc_outsourcingproject.domain.menuoption.repository.MenuOptionRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class MenuOptionService {
+
+    private final MenuRepository menuRepository;
+    private final MenuOptionRepository optionRepository;
+    private final OwnerValidator ownerValidator;
+
+    //TODO: repository 이렇게 가져오는 거 진짜 괜찮을까! -> updateOption()에서 menu.getName()도 사용
+    @Transactional
+    public void createOption(Long userId, Long menuId, String text, Integer price) {
+        Menu menu = validateMenuOfStore(userId, menuId);
+
+        MenuOption menuOption = new MenuOption(menu, text, price);
+        optionRepository.save(menuOption);
+    }
+
+
+    public List<MenuOptionResponse> getOptions(Long userId, Long menuId, Long optionId) {
+        validateMenuOfStore(userId, menuId);
+        if (optionId == null) {
+            return optionRepository.findByMenuId(menuId).stream().map(MenuOptionResponse::from).toList();
+        }
+
+        MenuOption option = optionRepository.findById(optionId).orElseThrow(MenuOptionNotFoundException::new);
+
+        if (!option.getMenu().equals(menuRepository.findById(menuId))) {
+            throw new InvalidStoreMenuException();
+        }
+
+        return (List<MenuOptionResponse>) MenuOptionResponse.from(option);
+    }
+
+    @Transactional
+    public MenuOptionResponse updateOption(Long userId, Long menuId, Long optionId, String text, Integer price) {
+        Menu menu = validateMenuOfStore(userId, menuId);
+
+        MenuOption option = optionRepository.findById(optionId).orElseThrow(MenuOptionNotFoundException::new);
+        MenuOption updateOption = modifiedOption(option, text, price);
+
+        return MenuOptionResponse.of(menu.getName(), updateOption.getText(), updateOption.getPrice());
+    }
+
+
+    public void deleteOption(Long userId, Long menuId, Long optionId) {
+        validateMenuOfStore(userId, menuId);
+        optionRepository.deleteById(optionId);
+    }
+
+
+    private MenuOption modifiedOption(MenuOption option, String text, Integer price) {
+        String updateText = text;
+        Integer updatePrice = price;
+
+        if (text == null) {
+            updateText = option.getText();
+        }
+        if (price == null) {
+            updatePrice = option.getPrice();
+        }
+
+        return option.updateOption(updateText, updatePrice);
+    }
+
+    private Menu validateMenuOfStore(Long userId, Long menuId) {
+        Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
+        Long storeId = menuRepository.findByMenuIdForStoreId(menuId);
+        ownerValidator.validateStoreOwner(storeId, userId);
+
+        return menu;
+    }
 }
