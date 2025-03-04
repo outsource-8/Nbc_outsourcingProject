@@ -24,6 +24,7 @@ public class ReviewService {
     private final StoreService storeService;
     private final OrderService orderService;
 
+    // review 생성
     @Transactional
     public CreateReviewResponse createReview(CreateReviewRequest request, Long userId, Long storeId, Long orderId) {
         User user = userService.getUserEntityById(userId);
@@ -50,10 +51,21 @@ public class ReviewService {
                 .build();
     }
 
+    // 리뷰 조회(가게 기준)
     @Transactional(readOnly = true)
     public Page<ReadReviewResponse> getReviewsByStoreId(Long storeId, Pageable pageable) {
 
         Page<Review> reviews = reviewRepository.findByStoreId(storeId, pageable);
+
+        return reviews
+                .map(ReadReviewResponse::toDto);
+    }
+
+    // 리뷰 조회(가게내 별점 기준)
+    @Transactional(readOnly = true)
+    public Page<ReadReviewResponse> getReviewsByRating(Long storeId, int rating, Pageable pageable) {
+
+        Page<Review> reviews = reviewRepository.findByStoreIdAndRating(storeId, rating, pageable);
 
         return reviews
                 .map(ReadReviewResponse::toDto);
