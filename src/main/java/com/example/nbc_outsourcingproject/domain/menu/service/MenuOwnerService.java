@@ -5,6 +5,8 @@ import com.example.nbc_outsourcingproject.domain.menu.entity.Category;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.exception.details.*;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
+import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -83,7 +85,7 @@ public class MenuOwnerService {
         }
 
         Store store = storeRepository.findById(storeId);
-        User user = userRepository.findById(authUserId);
+        User user = userRepository.findById(authUserId).orElseThrow();
 
         if (!storeRepository.existsByIdAndUser(store, user)) {
             throw new InvalidStoreOwner();
