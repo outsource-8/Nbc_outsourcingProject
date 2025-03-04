@@ -5,6 +5,7 @@ import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
 import com.example.nbc_outsourcingproject.domain.order.entity.Order;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderMenuRepository;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderRepository;
+import com.example.nbc_outsourcingproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
