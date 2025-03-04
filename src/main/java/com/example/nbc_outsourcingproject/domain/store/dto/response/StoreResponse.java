@@ -8,15 +8,18 @@ import java.time.LocalTime;
 public class StoreResponse {
     private final String name;
     private final String storeInfo;
+    private final String address;
     private final int minOrderAmount;
-    private final LocalTime closed;
     private final LocalTime opened;
+    private final LocalTime closed;
 
-    public StoreResponse(String name, String storeInfo, int minOrderAmount, LocalTime closed, LocalTime opened) {
+
+    public StoreResponse(String name, String storeInfo, String address, int minOrderAmount, LocalTime opened, LocalTime closed) {
         this.name = name;
         this.storeInfo = storeInfo;
+        this.address = address;
         this.minOrderAmount = minOrderAmount;
-        this.closed = closed;
         this.opened = opened;
+        this.closed = closed;
     }
 }
