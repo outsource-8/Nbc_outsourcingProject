@@ -7,6 +7,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,7 @@ import java.util.Date;
 
 @Slf4j(topic = "JwtUtil")
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
     private static final String BEARER_PREFIX = "Bearer ";
@@ -53,17 +55,17 @@ public class JwtUtil {
     }
 
 
-//    public String createRefreshToken(Long userId, String email, UserRole userRole) {
     public String createRefreshToken(Long userId) {
         Date date = new Date();
-        return BEARER_PREFIX + Jwts.builder()
+        String refresh = BEARER_PREFIX + Jwts.builder()
                 .setSubject(String.valueOf(userId))
-//                .claim("email", email)
-//                .claim("userRole", userRole.name())
                 .setIssuedAt(date)
                 .setExpiration(new Date(date.getTime() + REFRESH_TOKEN_TIME))
                 .signWith(key, signatureAlgorithm)
                 .compact();
+
+        log.info("refresh token 생성: {}", refresh);
+        return refresh;
     }
 
     public String substringToken(String tokenValue) {
@@ -86,5 +88,7 @@ public class JwtUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
+    
 }
 

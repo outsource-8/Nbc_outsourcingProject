@@ -18,7 +18,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PatchMapping("/users/password")
+    @PatchMapping("/user/password")
     public void updatePassword(@Auth AuthUser authUser, @Valid @RequestBody UpdatePassword updatePassword) {
         userService.updatePassword(authUser.getId(),updatePassword);
     }
