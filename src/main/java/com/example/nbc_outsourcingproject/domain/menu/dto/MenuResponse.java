@@ -14,7 +14,7 @@ public class MenuResponse {
 
     private String category;
     private String name;
-    private int price;
+    private Integer price;
     private String info;
 
 
