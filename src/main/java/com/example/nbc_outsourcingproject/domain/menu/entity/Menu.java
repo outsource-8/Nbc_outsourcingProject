@@ -33,12 +33,12 @@ public class Menu {
 
     @Column(nullable = false)
     @Size(min = 0)
-    private int price;
+    private Integer price;
 
     private String info;
 
     @ColumnDefault("false")
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
 
     public Menu() {
@@ -52,7 +52,7 @@ public class Menu {
         this.info = info;
     }
 
-    public Menu update(Category category, String name, int price, String info){
+    public Menu update(Category category, String name, int price, String info) {
         this.category = category;
         this.name = name;
         this.price = price;
@@ -60,7 +60,7 @@ public class Menu {
         return this;
     }
 
-    public void deleteMenu(){
+    public void deleteMenu() {
         this.isDeleted = true;
     }
 }

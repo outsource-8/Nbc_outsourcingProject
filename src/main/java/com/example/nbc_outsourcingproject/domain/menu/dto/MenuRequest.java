@@ -15,7 +15,7 @@ public class MenuRequest {
 
     @NotBlank(message = "메뉴 가격을 설정해주세요.")
     @Min(value = 0, message = "음수 값을 넣을 수 없습니다.")
-    private int price;
+    private Integer price;
 
     private String info;
 
