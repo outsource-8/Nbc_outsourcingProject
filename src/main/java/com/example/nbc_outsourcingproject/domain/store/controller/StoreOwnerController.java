@@ -1,10 +1,10 @@
 package com.example.nbc_outsourcingproject.domain.store.controller;
 
-import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
-import com.example.nbc_outsourcingproject.domain.store.entity.FakeUser;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
+import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
 import com.example.nbc_outsourcingproject.domain.store.service.StoreOwnerService;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,17 +21,17 @@ public class StoreOwnerController {
     // 가게 생성
     @PostMapping("/stores")
     public ResponseEntity<StoreSaveResponse> createStore(
-            FakeUser fakeUser,
+            User user,
             @Valid @RequestBody StoreSaveRequest storeSaveRequest
     ) {
-        return ResponseEntity.ok(storeOwnerService.saveStore(fakeUser, storeSaveRequest));
+        return ResponseEntity.ok(storeOwnerService.saveStore(user, storeSaveRequest));
     }
 
     // 소유한 가게 조회
     @GetMapping("/stores/mine")
     public ResponseEntity<List<StoreResponse>> getStoresMine(
-            @RequestParam() Long fakeUserId
-    ){
-        return ResponseEntity.ok(storeOwnerService.getStoresMine(fakeUserId));
+            @RequestParam() Long userId
+    ) {
+        return ResponseEntity.ok(storeOwnerService.getStoresMine(userId));
     }
 }

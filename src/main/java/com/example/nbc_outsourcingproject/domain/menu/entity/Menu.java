@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.menu.entity;
 
+import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;

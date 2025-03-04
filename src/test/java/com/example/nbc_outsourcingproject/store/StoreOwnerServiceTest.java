@@ -1,13 +1,14 @@
 package com.example.nbc_outsourcingproject.store;
 
+import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.common.exception.UnauthorizedException;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
-import com.example.nbc_outsourcingproject.domain.store.entity.FakeUser;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.store.service.StoreOwnerService;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +19,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 
@@ -41,9 +42,9 @@ public class StoreOwnerServiceTest {
                 LocalTime.of(14, 30, 45, 123000000),
                 LocalTime.of(14, 30, 45, 123000000)
         );
-        FakeUser fakeUser = new FakeUser(1L, "사용자", "OWNER");
+        User user = new User(1L, "사용자", UserRole.OWNER);
         Store store = new Store(
-                fakeUser,
+                user,
                 request.getName(),
                 request.getAddress(),
                 request.getMinOrderAmount(),
@@ -54,7 +55,7 @@ public class StoreOwnerServiceTest {
         given(storeRepository.save(any())).willReturn(store);
 
         //when
-        StoreSaveResponse response = storeOwnerService.saveStore(fakeUser, request);
+        StoreSaveResponse response = storeOwnerService.saveStore(user, request);
 
         //then
         assertNotNull(response);
@@ -71,29 +72,29 @@ public class StoreOwnerServiceTest {
                 LocalTime.of(14, 30, 45, 123000000),
                 LocalTime.of(14, 30, 45, 123000000)
         );
-        FakeUser fakeUser = new FakeUser(1L, "사용자", "USER");
+        User user = new User(1L, "사용자", UserRole.USER);
 
         //when
-        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> storeOwnerService.saveStore(fakeUser, request));
+        UnauthorizedException exception = assertThrows(UnauthorizedException.class, () -> storeOwnerService.saveStore(user, request));
 
         //then
         assertEquals("Owner만 가게를 생성할 수 있습니다.", exception.getMessage());
     }
 
     @Test
-    public void OWNER가_소유한_가게를_조회한다(){
+    public void OWNER가_소유한_가게를_조회한다() {
         //given
-        FakeUser fakeUser = new FakeUser(1L, "사용자1", "OWNER1");
+        User user = new User(1L, "사용자1", UserRole.OWNER);
 
         List<Store> storeList = List.of(
-                new Store(fakeUser, "name1", "address1", 1000, "storeInfo1", LocalTime.of(14, 30, 45), LocalTime.of(14, 30, 45)),
-                new Store(fakeUser, "test1", "address2", 2000, "storeInfo2", LocalTime.of(15, 30, 45), LocalTime.of(14, 30, 45))
+                new Store(user, "name1", "address1", 1000, "storeInfo1", LocalTime.of(14, 30, 45), LocalTime.of(14, 30, 45)),
+                new Store(user, "test1", "address2", 2000, "storeInfo2", LocalTime.of(15, 30, 45), LocalTime.of(14, 30, 45))
         );
 
-        given(storeRepository.findAllByFakeUserId(fakeUser.getId())).willReturn(storeList);
+        given(storeRepository.findAllByUserId(user.getId())).willReturn(storeList);
 
         //when
-        List<StoreResponse> response = storeOwnerService.getStoresMine(fakeUser.getId());
+        List<StoreResponse> response = storeOwnerService.getStoresMine(user.getId());
 
         //then
         assertNotNull(response);
