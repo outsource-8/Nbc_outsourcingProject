@@ -1,5 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.order.controller;
 
+import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
+import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
 import com.example.nbc_outsourcingproject.domain.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +18,7 @@ public class OrderController {
     //    @GetMapping("/stores/{storeId}/orders")
     @GetMapping("/orders")
     public ResponseEntity<Page<OrderResponse>> getOrders (
-//            @Auth AuthUser authUser
+            @Auth AuthUser authUser,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
     ){
