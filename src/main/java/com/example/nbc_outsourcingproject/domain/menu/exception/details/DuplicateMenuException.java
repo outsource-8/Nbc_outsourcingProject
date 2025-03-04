@@ -1,11 +1,11 @@
 package com.example.nbc_outsourcingproject.domain.menu.exception.details;
 
-import com.example.nbc_outsourcingproject.domain.menu.exception.MenuException;
-import com.example.nbc_outsourcingproject.domain.menu.exception.MenuExceptionCode;
+import com.example.nbc_outsourcingproject.domain.common.exception.OutsourcingException;
+import com.example.nbc_outsourcingproject.domain.menu.exception.MenuErrorCode;
 
-public class DuplicateMenuException extends MenuException {
+public class DuplicateMenuException extends OutsourcingException {
 
     public DuplicateMenuException() {
-        super(MenuExceptionCode.DUPLICATE_MENU);
+        super(MenuErrorCode.DUPLICATE_MENU);
     }
 }
