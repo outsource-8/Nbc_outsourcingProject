@@ -24,6 +24,7 @@ public class ReviewController {
 
     private final JwtUtil jwtUtil;
 
+    // 리뷰 생성
     @PostMapping(params = "orderId")
     public ResponseEntity<CreateReviewResponse> createReview(
             @RequestBody CreateReviewRequest request,
@@ -40,12 +41,26 @@ public class ReviewController {
         return new ResponseEntity<>(reviewService.createReview(request, userId, storeId, orderId), HttpStatus.CREATED);
     }
 
+    // 리뷰 조회(가게 기준)
     @GetMapping
     public ResponseEntity<Page<ReadReviewResponse>> getReviews(
             @PathVariable Long storeId,
-            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
 
         Page<ReadReviewResponse> response = reviewService.getReviewsByStoreId(storeId, pageable);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    // 리뷰 조회(가게내 별점 기준)
+    @GetMapping(params = "rating")
+    public ResponseEntity<Page<ReadReviewResponse>> getReviewsByRating(
+            @PathVariable Long storeId,
+            @RequestParam int rating,
+            @PageableDefault(sort = "rating", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+
+        Page<ReadReviewResponse> response = reviewService.getReviewsByRating(storeId, rating, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
