@@ -43,6 +43,8 @@ public class Store {
     @NotBlank(message = "마감 시간을 입력해주세요.")
     private LocalTime closed;
 
+    private Boolean isShutDown = false;
+
     public Store(
             User user,
             String name,
@@ -67,6 +69,10 @@ public class Store {
         this.storeInfo = storeInfo;
         this.opened = opened;
         this.closed = closed;
+    }
+
+    public void shutDown(){
+        this.isShutDown = true;
     }
 
 }

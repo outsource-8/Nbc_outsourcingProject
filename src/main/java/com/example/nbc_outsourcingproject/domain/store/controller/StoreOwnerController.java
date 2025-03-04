@@ -24,7 +24,7 @@ public class StoreOwnerController {
     private final StoreOwnerService storeOwnerService;
 
     // 가게 생성
-    @PostMapping("/stores")
+    @PostMapping("/owner/stores")
     @Operation(summary = "가게 생성")
     public ResponseEntity<StoreSaveResponse> createStore(
             @Auth AuthUser user,
@@ -34,7 +34,7 @@ public class StoreOwnerController {
     }
 
     // 소유한 가게 조회
-    @GetMapping("/stores/mine")
+    @GetMapping("/owner/stores")
     @Operation(summary = "소유한 가게 조회")
     public ResponseEntity<List<StoreResponse>> getStoresMine(
             @Auth AuthUser user
@@ -43,7 +43,7 @@ public class StoreOwnerController {
     }
 
     // 가게 정보 수정
-    @PatchMapping("/stores/mine/{storeId}")
+    @PatchMapping("/owner/stores/{storeId}")
     @Operation(summary = "가게 정보 수정")
     public ResponseEntity<StoreResponse> updateStore(
             @Auth AuthUser user,
@@ -54,4 +54,13 @@ public class StoreOwnerController {
     }
 
     // 가게 폐업 처리
+    @DeleteMapping("/owner/stores/{storeId}")
+    @Operation(summary = "가게 폐업 처리")
+    public ResponseEntity<Void> shutDownStore(
+            @Auth AuthUser user,
+            @PathVariable Long storeId
+    ) {
+        storeOwnerService.shutDownStore(user,storeId);
+        return ResponseEntity.noContent().build();
+    }
 }

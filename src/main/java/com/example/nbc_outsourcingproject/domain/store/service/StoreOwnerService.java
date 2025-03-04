@@ -75,7 +75,7 @@ public class StoreOwnerService {
     @Transactional
     public StoreResponse updateStore(AuthUser user, Long storeId, StoreUpdateRequest storeUpdateRequest) {
         validateOwner(user.getUserRole().toString());
-        validateStoreOwnership(user.getId(),storeId);
+        validateStoreOwnership(user.getId(), storeId);
         Store store = findStoreById(storeId);
         store.updateInfo(
                 storeUpdateRequest.getName(),
@@ -96,6 +96,13 @@ public class StoreOwnerService {
         );
     }
 
+    // 가게 폐업 처리
+    public void shutDownStore(AuthUser user, Long storeId) {
+        Store store = findStoreById(storeId);
+        validateStoreOwnership(user.getId(), storeId);
+        store.shutDown();
+    }
+
     // 사용자 OWNER 여부 검증
     private void validateOwner(String role) {
         if (!role.equals("OWNER")) {
@@ -104,17 +111,17 @@ public class StoreOwnerService {
     }
 
     // 가게가 3개 초과시 생성 불가
-    public void validateStoreCreationLimit(AuthUser user){
+    public void validateStoreCreationLimit(AuthUser user) {
         List<Store> storesMine = storeRepository.findAllByUserId(user.getId());
-        if (storesMine.size() > 3){
+        if (storesMine.size() > 3) {
             throw new InvalidRequestException("가게는 최대 3개까지 생성할 수 있습니다.");
         }
     }
 
     // 소유한 가게인지 확인
-    public void validateStoreOwnership(Long userId, Long storeId){
+    public void validateStoreOwnership(Long userId, Long storeId) {
         Store store = findStoreById(storeId);
-        if(!store.getUser().getId().equals(userId)){
+        if (!store.getUser().getId().equals(userId)) {
             throw new UnauthorizedException("권한이 없습니다.");
         }
     }
