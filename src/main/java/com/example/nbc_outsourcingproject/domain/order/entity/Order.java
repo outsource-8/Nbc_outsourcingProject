@@ -1,7 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.order.entity;
 
 import com.example.nbc_outsourcingproject.domain.delete.Store;
-import com.example.nbc_outsourcingproject.domain.delete.Timestamped;
+import com.example.nbc_outsourcingproject.domain.order.Timestamped;
 import com.example.nbc_outsourcingproject.domain.delete.User;
 import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
 import jakarta.persistence.*;

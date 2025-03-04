@@ -2,7 +2,6 @@ package com.example.nbc_outsourcingproject.domain.order.service;
 
 import com.example.nbc_outsourcingproject.domain.delete.Menu;
 import com.example.nbc_outsourcingproject.domain.delete.MenuService;
-import com.example.nbc_outsourcingproject.domain.delete.UserService;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveRequest;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
@@ -11,6 +10,7 @@ import com.example.nbc_outsourcingproject.domain.order.entity.OrderMenu;
 import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderMenuRepository;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderRepository;
+import com.example.nbc_outsourcingproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
