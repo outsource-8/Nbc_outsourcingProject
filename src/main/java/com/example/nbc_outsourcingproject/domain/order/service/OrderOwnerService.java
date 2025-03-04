@@ -1,7 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.order.service;
 
-import com.example.nbc_outsourcingproject.domain.delete.Menu;
-import com.example.nbc_outsourcingproject.domain.delete.MenuService;
+import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.domain.menu.service.MenuOwnerService;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveRequest;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
@@ -10,6 +10,11 @@ import com.example.nbc_outsourcingproject.domain.order.entity.OrderMenu;
 import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderMenuRepository;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderRepository;
+import com.example.nbc_outsourcingproject.domain.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
+import com.example.nbc_outsourcingproject.domain.store.service.StoreService;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
+import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import com.example.nbc_outsourcingproject.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,19 +35,19 @@ public class OrderOwnerService {
 
     private final OrderRepository orderRepository;
     private final OrderMenuRepository orderMenuRepository;
-    private final UserService userService;
-    //    private final StoreService storeService;
-    private final MenuService menuService;
+    private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
+    private final MenuOwnerService menuOwnerService;
 
     @Transactional
-    public OrderSaveResponse createOrder(List<OrderSaveRequest> orders) {
-//        User user = userService.getUser(dto.getMenuId());
-//        Store store = storeService.getStroe(storeId);
-//        store.getminPrice();
+    public OrderSaveResponse createOrder(AuthUser authUser, Long storeId, List<OrderSaveRequest> orders) {
+        User user = userRepository.findById(authUser.getId()).orElseThrow(
+                () -> new IllegalStateException("User가 없습니다.")
+        );
 
-        Order order = new Order();
-        Order savedOrder = orderRepository.save(order);
-        int totalAmount = 0;
+        Store store = storeRepository.findById(storeId).orElseThrow(
+                () -> new IllegalStateException("store가 없습니다.")
+        );
 
         if (orders == null) {
             throw new IllegalStateException("주문 내역이 없습니다.");
@@ -58,18 +63,8 @@ public class OrderOwnerService {
             orderMenuRepository.save(orderMenu);
         }
 
-//        for (Map.Entry<Long, Integer> entry : dto.getOrders().entrySet()) {
-//            Long menuId = entry.getKey();
-//            Integer quantity = entry.getValue();
-//
-//            Menu menu = menuService.getMenu(menuId);
-//            OrderMenu orderMenu = new OrderMenu(savedOrder, menu.getName(),menu.getPrice(),quantity);
-//            totalAmount += menu.getPrice() * quantity;
-//            orderMenuRepository.save(orderMenu);
-//        }
-
         //최소금액
-        if (totalAmount < 14000){
+        if (totalAmount < store.getMinOrderAmount();){
             savedOrder.update(totalAmount,OrderStatus.CANCELED);
             throw new IllegalStateException("최소주문금액보다 작습니다.");
         }
@@ -84,6 +79,25 @@ public class OrderOwnerService {
 //            orderRepository.save(order);
 //            throw new IllegalStateException("영업시간이 아닙니다.");
 //        }
+
+
+        Order order = new Order();
+        Order savedOrder = orderRepository.save(order);
+        int totalAmount = 0;
+
+
+
+//        for (Map.Entry<Long, Integer> entry : dto.getOrders().entrySet()) {
+//            Long menuId = entry.getKey();
+//            Integer quantity = entry.getValue();
+//
+//            Menu menu = menuService.getMenu(menuId);
+//            OrderMenu orderMenu = new OrderMenu(savedOrder, menu.getName(),menu.getPrice(),quantity);
+//            totalAmount += menu.getPrice() * quantity;
+//            orderMenuRepository.save(orderMenu);
+//        }
+
+
 
         savedOrder.update(totalAmount,OrderStatus.PENDING);
         orderRepository.save(order);

@@ -1,6 +1,8 @@
 package com.example.nbc_outsourcingproject.domain.order.controller;
 
 import com.example.nbc_outsourcingproject.config.aop.annotation.Order;
+import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
+import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveRequest;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
@@ -19,12 +21,13 @@ public class OrderOwnerController {
     private final OrderOwnerService orderOwnerService;
 
     @Order
-//    @PostMapping("/stores/{storeId}/orders")
-    @PostMapping("/orders")
-    public ResponseEntity<OrderSaveResponse> createOrder (@RequestBody List<OrderSaveRequest> orders
-//                             , @Auth AuthUser authUser
+    @PostMapping("/stores/{storeId}/orders")
+    public ResponseEntity<OrderSaveResponse> createOrder (
+            @Auth AuthUser authUser,
+            @PathVariable Long storeId,
+            @RequestBody List<OrderSaveRequest> orders
     ){
-       return ResponseEntity.ok(orderOwnerService.createOrder(orders));
+       return ResponseEntity.ok(orderOwnerService.createOrder(authUser, storeId, orders));
     }
 
     //    @GetMapping("/stores/{storeId}/orders")
