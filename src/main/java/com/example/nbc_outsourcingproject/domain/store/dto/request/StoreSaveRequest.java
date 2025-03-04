@@ -1,4 +1,4 @@
-package com.example.nbc_outsourcingproject.store.store.dto.request;
+package com.example.nbc_outsourcingproject.domain.store.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;

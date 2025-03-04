@@ -1,8 +1,8 @@
-package com.example.nbc_outsourcingproject.store.store.service;
+package com.example.nbc_outsourcingproject.domain.store.service;
 
-import com.example.nbc_outsourcingproject.store.store.dto.response.StoreResponse;
-import com.example.nbc_outsourcingproject.store.store.entity.Store;
-import com.example.nbc_outsourcingproject.store.store.repository.StoreRepository;
+import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
+import com.example.nbc_outsourcingproject.domain.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
