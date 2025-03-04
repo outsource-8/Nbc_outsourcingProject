@@ -3,7 +3,7 @@ package com.example.nbc_outsourcingproject.domain.auth.enums;
 import java.util.Arrays;
 
 public enum UserRole {
-    BUSINESS, USER;
+    OWNER, USER;
 
     public static UserRole of(String role) {
         return Arrays.stream(UserRole.values())

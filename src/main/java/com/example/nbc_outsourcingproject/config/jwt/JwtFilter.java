@@ -34,23 +34,23 @@ public class JwtFilter implements Filter {
 
         String url = httpRequest.getRequestURI();
 
-        if(url.startsWith("/auth")) {
+        if(url.startsWith("/user")) {
             chain.doFilter(request, response);
             return;
         }
         log.info("확인 {}", httpRequest.getHeader("Authorization"));
         String bearerJwt = httpRequest.getHeader("Authorization");
-        log.info("지워진 상태의 값에 bearer가 붙어서 출력: {}", bearerJwt);
+        log.info("지워진 상태의 값에 bearer 가 붙어서 출력: {}", bearerJwt);
 
         if (bearerJwt == null) {
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰이 필요합니다");
             return;
         }
 
-        log.info("bearer가 있는지 확인 {}", bearerJwt);
+//        log.info("bearer 가 있는지 확인 {}", bearerJwt);
         String jwt = jwtUtil.substringToken(bearerJwt);
 
-        log.info("bearer 가 없어야 맞음 {}", jwt);
+//        log.info("bearer 가 없어야 맞음 {}", jwt);
         Cookie[] cookies = httpRequest.getCookies();
         if (cookies == null) {
             httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "유효하지 않은 접근입니다");
@@ -77,9 +77,9 @@ public class JwtFilter implements Filter {
             httpRequest.setAttribute("email", claims.get("email"));
             httpRequest.setAttribute("userRole", claims.get("userRole"));
 
-            if (url.startsWith("/BUSINESS")) {
+            if (url.startsWith("/owner")) {
                 // 관리자 권한이 없는 경우 403을 반환합니다.
-                if (!UserRole.BUSINESS.equals(userRole)) {
+                if (!UserRole.OWNER.equals(userRole)) {
                     httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN, "관리자 권한이 없습니다.");
                     return;
                 }
