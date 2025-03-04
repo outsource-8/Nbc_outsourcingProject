@@ -19,15 +19,23 @@ public class OrderMenu {
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "menu_id")
 //    private Menu menu;
-    private String menuName;
-    private int menuPrice;
-    private int quantity;
 
-    public OrderMenu(Order order, String menuName, int menuPrice, int quantity) {
+    private String currentMenuName;
+    private int currentMenuPrice;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "menu_option_id")
+//    private MenuOption menuOption;
+
+    private int quantity;
+//    private String currentOptionName;
+//    private int currentOptionPrice;
+
+
+    public OrderMenu(Order order, String currentMenuName, int currentMenuPrice, int quantity) {
         this.order = order;
-        this.menuName = menuName;
-        this.menuPrice = menuPrice;
+        this.currentMenuName = currentMenuName;
+        this.currentMenuPrice = currentMenuPrice;
         this.quantity = quantity;
     }
-
 }
