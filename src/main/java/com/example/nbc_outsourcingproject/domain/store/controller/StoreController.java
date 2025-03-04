@@ -28,5 +28,4 @@ public class StoreController {
         return ResponseEntity.ok(storeService.getStores(StoreName, page, size));
     }
 
-
 }

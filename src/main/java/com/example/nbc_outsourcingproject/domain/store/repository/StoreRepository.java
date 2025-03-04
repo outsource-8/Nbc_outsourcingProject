@@ -13,8 +13,8 @@ import java.util.List;
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
     // 가게 다건 조회
-    @Query("SELECT s FROM Store s JOIN FETCH s.user WHERE " +
-            "(:name IS NULL OR s.name LIKE CONCAT('%', :name, '%') ) "+
+    @Query("SELECT s FROM Store s JOIN FETCH s.user WHERE s.isShutDown = false " +
+            "AND (:name IS NULL OR s.name LIKE CONCAT('%', :name, '%') ) " +
             "ORDER BY s.name")
     Page<Store> findStores(
             @Param("name") String name,
@@ -22,8 +22,9 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     );
 
     // 소유한 가게 다건 조회
-    @Query("SELECT s From Store s JOIN FETCH s.user WHERE s.user.id = :userId")
+    @Query("SELECT s From Store s JOIN FETCH s.user WHERE s.user.id = :userId AND s.isShutDown = false ")
     List<Store> findAllByUserId(@Param("userId") Long userId);
 
     boolean existsByIdAndUser(Store store, User user);
+
 }
