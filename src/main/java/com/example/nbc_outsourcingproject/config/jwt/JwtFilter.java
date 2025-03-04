@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 
 @Slf4j
@@ -33,6 +34,13 @@ public class JwtFilter implements Filter {
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         String url = httpRequest.getRequestURI();
+
+        List<String> whitelist = List.of("/swagger-ui/**", "/v3/api-docs/**");
+
+        if (whitelist.stream().anyMatch(url::startsWith)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if(url.startsWith("/user")) {
             chain.doFilter(request, response);
