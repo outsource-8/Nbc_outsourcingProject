@@ -1,10 +1,10 @@
 package com.example.nbc_outsourcingproject.domain.menu.exception.details;
 
-import com.example.nbc_outsourcingproject.domain.menu.exception.MenuException;
-import com.example.nbc_outsourcingproject.domain.menu.exception.MenuExceptionCode;
+import com.example.nbc_outsourcingproject.domain.common.exception.OutsourcingException;
+import com.example.nbc_outsourcingproject.domain.menu.exception.MenuErrorCode;
 
-public class MenuNotFoundException extends MenuException {
+public class MenuNotFoundException extends OutsourcingException {
     public MenuNotFoundException() {
-        super(MenuExceptionCode.MENU_NOT_FOUND);
+        super(MenuErrorCode.MENU_NOT_FOUND);
     }
 }

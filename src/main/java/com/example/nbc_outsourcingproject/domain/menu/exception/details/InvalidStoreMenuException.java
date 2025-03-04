@@ -1,10 +1,10 @@
 package com.example.nbc_outsourcingproject.domain.menu.exception.details;
 
-import com.example.nbc_outsourcingproject.domain.menu.exception.MenuException;
-import com.example.nbc_outsourcingproject.domain.menu.exception.MenuExceptionCode;
+import com.example.nbc_outsourcingproject.domain.common.exception.OutsourcingException;
+import com.example.nbc_outsourcingproject.domain.menu.exception.MenuErrorCode;
 
-public class InvalidStoreMenuException extends MenuException {
+public class InvalidStoreMenuException extends OutsourcingException {
     public InvalidStoreMenuException() {
-        super(MenuExceptionCode.INVALID_STORE_MENU);
+        super(MenuErrorCode.INVALID_STORE_MENU);
     }
 }
