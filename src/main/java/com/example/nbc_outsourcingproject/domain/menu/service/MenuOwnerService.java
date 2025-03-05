@@ -63,15 +63,8 @@ public class MenuOwnerService {
             return storeMenuList.stream().map(MenuResponse::from).toList();
         }
 
-        // 특정 메뉴 선택
-        Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
-
-        // 선택한 메뉴가 해당 store의 메뉴가 아닐 경우 예외 처리
-        if (!getMenu.getStore().equals(storeRepository.findById(storeId))) {
-            throw new InvalidStoreMenuException();
-        }
-
-        return (List<MenuResponse>) MenuResponse.from(getMenu);
+        // 가게 단건 메뉴
+        return (List<MenuResponse>) getMenu(storeId, authUserId, menuId);
     }
 
 
@@ -81,6 +74,19 @@ public class MenuOwnerService {
         getMenu.deleteMenu();
     }
 
+
+
+    private MenuResponse getMenu(Long storeId, Long authUserId, Long menuId) {
+        // 특정 메뉴 선택
+        Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
+
+        // 선택한 메뉴가 해당 store의 메뉴가 아닐 경우 예외 처리
+        if (!getMenu.getStore().equals(storeRepository.findById(storeId))) {
+            throw new InvalidStoreMenuException();
+        }
+
+        return MenuResponse.from(getMenu);
+    }
 
 
     private Menu modifiedMenu(Menu getMenu, String category, String name, Integer price, String info) {
