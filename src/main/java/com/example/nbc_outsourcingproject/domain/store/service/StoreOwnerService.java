@@ -53,14 +53,7 @@ public class StoreOwnerService {
         Store savedStore = storeRepository.save(store);
         saveStoreToCache(user.getId(), savedStore.getId()); //생성된 가게 캐시에 저장
 
-        return new StoreSaveResponse(
-                savedStore.getId(),
-                savedStore.getName(),
-                savedStore.getStoreInfo(),
-                savedStore.getMinOrderAmount(),
-                savedStore.getClosed(),
-                savedStore.getOpened()
-        );
+        return StoreSaveResponse.from(savedStore);
     }
 
     // 소유한 가게 조회
@@ -68,13 +61,7 @@ public class StoreOwnerService {
     public List<StoreResponse> getStoresMine(AuthUser authUser) {
         List<Store> storesMine = storeRepository.findAllByUserId(authUser.getId());
         return storesMine.stream()
-                .map(store -> new StoreResponse(
-                        store.getName(),
-                        store.getStoreInfo(),
-                        store.getAddress(),
-                        store.getMinOrderAmount(),
-                        store.getClosed(),
-                        store.getOpened()))
+                .map(StoreResponse::from)
                 .toList();
     }
 
@@ -83,23 +70,8 @@ public class StoreOwnerService {
     public StoreResponse updateStore(AuthUser user, Long storeId, StoreUpdateRequest storeUpdateRequest) {
         myStoreCache.validateStoreOwner(user.getId(), storeId);
         Store store = storeRepository.findStoreBy(storeId);
-        store.updateInfo(
-                storeUpdateRequest.getName(),
-                storeUpdateRequest.getAddress(),
-                storeUpdateRequest.getMinOrderAmount(),
-                storeUpdateRequest.getStoreInfo(),
-                storeUpdateRequest.getOpened(),
-                storeUpdateRequest.getClosed()
-        );
-
-        return new StoreResponse(
-                store.getName(),
-                store.getStoreInfo(),
-                store.getAddress(),
-                store.getMinOrderAmount(),
-                store.getOpened(),
-                store.getClosed()
-        );
+        store.updateFrom(storeUpdateRequest);
+        return StoreResponse.from(store);
     }
 
     // 가게 폐업 처리
@@ -110,7 +82,6 @@ public class StoreOwnerService {
         removeStoreToCache(user.getId(), storeId);
         store.shutDown();
     }
-
 
     // 생성된 가게 캐시 저장
     @CachePut(key = "#userId", value = "myStores")
