@@ -9,6 +9,6 @@ public enum UserRole {
         return Arrays.stream(UserRole.values())
                 .filter(r -> r.name().equalsIgnoreCase(role))
                 .findFirst()
-                .orElseThrow(()-> new IllegalArgumentException("유호하지 않은 권한입니다"));
+                .orElseThrow(()-> new IllegalArgumentException("유효하지 않은 권한입니다"));
     }
 }

@@ -4,12 +4,12 @@ import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
 import lombok.Getter;
 
 @Getter
-public class OrderAcceptResponse {
+public class OrderAcceptedResponse {
 
     private final Long orderId;
     private final OrderStatus status;
 
-    public OrderAcceptResponse(Long orderId, OrderStatus status) {
+    public OrderAcceptedResponse(Long orderId, OrderStatus status) {
         this.orderId = orderId;
         this.status = status;
     }

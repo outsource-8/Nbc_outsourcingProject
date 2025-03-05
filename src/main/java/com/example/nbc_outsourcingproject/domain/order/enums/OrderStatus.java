@@ -4,7 +4,7 @@ public enum OrderStatus {
 
     ACCEPTED, CANCELED, PENDING, COOKING, DELIVERING, COMPLETED;
 
-    //    ACCEPTED(0,"Y"),
+//    ACCEPTED(0,"Y"),
 //    CANCELED(0,"N"),
 //
 //    PENDING(1,"1"),
