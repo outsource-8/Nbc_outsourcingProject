@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.order.service;
 
+import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
@@ -48,6 +49,10 @@ public class OrderService {
         Store store = storeRepository.findById(storeId).orElseThrow(
                 () -> new IllegalStateException("store가 없습니다.")
         );
+
+        if (user.getUserRole().equals(UserRole.OWNER)){
+            throw new IllegalStateException("고객만 주문 가능합니다.");
+        }
 
         if (orderRepository.existsByUserAndStoreAndStatus(user, store, OrderStatus.PENDING)) {
             throw new IllegalStateException("이미 해당 가게에 주문한 기록이 있습니다.");

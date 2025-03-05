@@ -31,11 +31,23 @@ public class OrderOwnerController {
 
 
     @Order
-    @PatchMapping("/owner/stores/{storeId}/orders")
-    public ResponseEntity<OrderAcceptResponse> updateOrderAccept (@RequestBody OrderAcceptRequest dto
-                             , @Auth AuthUser authUser
+    @PatchMapping("/owner/stores/{storeId}/orders/accepted")
+    public ResponseEntity<OrderAcceptedResponse> updateOrderAccepted (
+            @Auth AuthUser authUser,
+            @PathVariable Long storeId,
+            @RequestBody OrderAcceptedRequest dto
     ){
-        return ResponseEntity.ok(orderOwnerService.updateOrderAccepted(dto, authUser));
+        return ResponseEntity.ok(orderOwnerService.updateOrderAccepted(authUser, storeId, dto));
+    }
+
+    @Order
+    @PatchMapping("/owner/stores/{storeId}/orders/status")
+    public ResponseEntity<OrderStatusResponse> updateOrderStatus (
+            @Auth AuthUser authUser,
+            @PathVariable Long storeId,
+            @RequestBody OrderStatusRequest dto
+    ){
+        return ResponseEntity.ok(orderOwnerService.updateOrderStatus(authUser, storeId, dto));
     }
 
 }

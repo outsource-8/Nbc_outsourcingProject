@@ -62,7 +62,19 @@ public class OrderOwnerService {
     }
 
     @Transactional
-    public OrderAcceptResponse updateOrderAccepted(OrderAcceptRequest dto, AuthUser authUser) {
+    public OrderAcceptedResponse updateOrderAccepted(AuthUser authUser, Long storeId, OrderAcceptedRequest dto) {
+        User user = userRepository.findById(authUser.getId()).orElseThrow(
+                () -> new IllegalStateException("User가 없습니다.")
+        );
+
+        Store store = storeRepository.findById(storeId).orElseThrow(
+                () -> new IllegalStateException("store가 없습니다.")
+        );
+
+        if (store.getUser().getId() != user.getId()){
+            throw new IllegalStateException("본인 가게가 아닙니다.");
+        }
+
         Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(
                 () -> new IllegalStateException("주문 없음")
         );
@@ -71,7 +83,64 @@ public class OrderOwnerService {
             throw new IllegalStateException("주문 수락 혹은 취소 하세요.");
         }
         order.updateAccepted(dto.getStatus());
-        return new OrderAcceptResponse(
+        return new OrderAcceptedResponse(
+                order.getId(),
+                order.getStatus()
+        );
+    }
+
+    @Transactional
+    public OrderStatusResponse updateOrderStatus(AuthUser authUser, Long storeId, OrderStatusRequest dto) {
+        User user = userRepository.findById(authUser.getId()).orElseThrow(
+                () -> new IllegalStateException("User가 없습니다.")
+        );
+
+        Store store = storeRepository.findById(storeId).orElseThrow(
+                () -> new IllegalStateException("store가 없습니다.")
+        );
+
+        if (store.getUser().getId() != user.getId()){
+            throw new IllegalStateException("본인 가게가 아닙니다.");
+        }
+
+        Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(
+                () -> new IllegalStateException("주문 없음")
+        );
+
+        if (dto.getStatus().equals(OrderStatus.ACCEPTED) || dto.getStatus().equals(OrderStatus.CANCELED)){
+            throw new IllegalStateException("주문 수락, 취소는 /accepted에서 하세요.");
+        }
+
+        OrderStatus status = order.getStatus();
+        switch (status){
+            case PENDING ->  throw new IllegalStateException("/accepted에서 주문 수락, 취소 하세요.");
+            case ACCEPTED -> {
+                if (!dto.getStatus().equals(OrderStatus.COOKING)){
+                    throw new IllegalStateException("현재 주문 수락 상태입니다. 다음 단계를 입력하세요.");
+                }
+                order.updateStatus(dto.getStatus());
+            }
+            case CANCELED -> {
+                throw new IllegalStateException("취소된 주문은 수정할 수 없습니다.");
+            }
+            case COOKING -> {
+                if (!dto.getStatus().equals(OrderStatus.DELIVERING)){
+                    throw new IllegalStateException("현재 주문 조리중입니다. 다음 단계를 입력하세요.");
+                }
+                order.updateStatus(dto.getStatus());
+            }
+            case DELIVERING -> {
+                if (!dto.getStatus().equals(OrderStatus.COMPLETED)){
+                    throw new IllegalStateException("현재 배달중입니다. 다음 단계를 입력하세요.");
+                }
+                order.updateStatus(dto.getStatus());
+            }
+            case COMPLETED -> {
+                throw new IllegalStateException("완료된 주문은 수정할 수 없습니다.");
+            }
+        }
+
+        return new OrderStatusResponse(
                 order.getId(),
                 order.getStatus()
         );

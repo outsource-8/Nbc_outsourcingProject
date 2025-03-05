@@ -46,4 +46,8 @@ public class Order extends Timestamped {
     public void updateAccepted(OrderStatus status) {
         this.status = status;
     }
+
+    public void updateStatus(OrderStatus status) {
+        this.status = status;
+    }
 }
