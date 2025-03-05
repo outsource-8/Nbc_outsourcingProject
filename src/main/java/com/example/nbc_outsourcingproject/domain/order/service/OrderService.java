@@ -61,7 +61,7 @@ public class OrderService {
             throw new IllegalStateException("고객만 주문 가능합니다.");
         }
 
-        if (orderRepository.existsByUserAndStoreAndStatus(user, store, OrderStatus.PENDING)) {
+        if (orderRepository.existsByUserAndStoreAndStatusNot(user, store, OrderStatus.COMPLETED)) {
             throw new IllegalStateException("이미 해당 가게에 주문한 기록이 있습니다.");
         }
 
@@ -91,9 +91,10 @@ public class OrderService {
             }
 
             List<MenuOption> menuOptionList = menuOptionRepository.findByIdIn(optionIds);
-            List<MenuOptionRequest> menuOptionRequests = menuOptionList.stream()
-                    .map(option -> new MenuOptionRequest(option.getText(), option.getPrice()))
-                    .toList();
+            List<MenuOptionRequest> menuOptionRequests
+                    = menuOptionList.stream()
+                                    .map(option -> new MenuOptionRequest(option.getText(), option.getPrice()))
+                                    .toList();
             String strOptionIds = objectMapper.writeValueAsString(menuOptionRequests).replace("\"","");
             OrderMenu orderMenu = new OrderMenu(order,menu.getName(),menu.getPrice(),quantity,strOptionIds);
             int totalOptionAmount = menuOptionList.stream().mapToInt(MenuOption::getPrice).sum();
