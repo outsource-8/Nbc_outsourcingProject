@@ -56,7 +56,6 @@ public class StoreOwnerService {
         );
 
         Store savedStore = storeRepository.save(store);
-        saveStoreToCache(user.getId(), savedStore.getId()); //생성된 가게 캐시에 저장
 
         return new StoreSaveResponse(
                 savedStore.getId(),
