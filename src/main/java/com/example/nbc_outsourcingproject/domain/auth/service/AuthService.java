@@ -1,13 +1,13 @@
 package com.example.nbc_outsourcingproject.domain.auth.service;
 
-import com.example.nbc_outsourcingproject.config.PasswordEncoder;
+import com.example.nbc_outsourcingproject.config.resolver.PasswordEncoder;
 import com.example.nbc_outsourcingproject.domain.auth.dto.request.LoginRequest;
 import com.example.nbc_outsourcingproject.domain.auth.dto.request.SignupRequest;
 import com.example.nbc_outsourcingproject.domain.auth.dto.response.LoginResponse;
 import com.example.nbc_outsourcingproject.domain.auth.dto.response.SignupResponse;
 import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.auth.exception.AuthException;
-import com.example.nbc_outsourcingproject.domain.common.exception.InvalidRequestException;
+import com.example.nbc_outsourcingproject.domain.common.exception.details.InvalidRequestException;
 import com.example.nbc_outsourcingproject.config.jwt.JwtUtil;
 import com.example.nbc_outsourcingproject.domain.token.entity.ReFreshToken;
 import com.example.nbc_outsourcingproject.domain.token.repository.ReFreshTokenRepository;

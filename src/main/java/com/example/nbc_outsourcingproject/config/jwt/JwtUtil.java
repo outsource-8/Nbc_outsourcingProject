@@ -1,7 +1,7 @@
 package com.example.nbc_outsourcingproject.config.jwt;
 
 import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
-import com.example.nbc_outsourcingproject.domain.common.exception.ServerException;
+import com.example.nbc_outsourcingproject.domain.common.exception.details.ServerException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
