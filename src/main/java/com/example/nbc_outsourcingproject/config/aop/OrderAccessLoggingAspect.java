@@ -9,6 +9,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Slf4j
 @Aspect
 @Component
@@ -20,19 +22,16 @@ public class OrderAccessLoggingAspect {
 
     @Around("@annotation(com.example.nbc_outsourcingproject.config.aop.annotation.Order)")
     public Object logOrderApiAccess(ProceedingJoinPoint joinPoint) throws Throwable {
-//        Long userId = (Long) request.getAttribute("userId");
+        Long userId = (Long) request.getAttribute("userId");
         String url = request.getRequestURI();
-        long requestTimestamp = System.currentTimeMillis();
+        LocalDateTime now = LocalDateTime.now();
 
         String requestBody = objectMapper.writeValueAsString(joinPoint.getArgs());
-//        log.info("AOP - Order API Request: 요청시각={}, RequestBody={}",
-//                 requestTimestamp, requestBody);
-
         Object result = joinPoint.proceed();
 
         String responseBody = objectMapper.writeValueAsString(result);
-        log.info("AOP - Order API Request: Timestamp={}, RequestBody={}, ResponseBody={}",
-                requestTimestamp, requestBody, responseBody);
+        log.info("AOP - Order API Request: 요청 시각={}, RequestBody={}, ResponseBody={}",
+                now, requestBody, responseBody);
 
         return result;
     }

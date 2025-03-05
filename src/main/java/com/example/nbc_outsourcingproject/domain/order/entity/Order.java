@@ -1,6 +1,5 @@
 package com.example.nbc_outsourcingproject.domain.order.entity;
 
-import com.example.nbc_outsourcingproject.domain.order.Timestamped;
 import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;

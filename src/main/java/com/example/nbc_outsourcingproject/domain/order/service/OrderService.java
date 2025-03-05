@@ -49,17 +49,9 @@ public class OrderService {
 
     @Transactional
     public OrderSaveResponse createOrder(AuthUser authUser, Long storeId, List<OrderSaveRequest> menus) throws JsonProcessingException {
-        User user = userRepository.findById(authUser.getId()).orElseThrow(
-                () -> new IllegalStateException("User가 없습니다.")
-        );
-
-        Store store = storeRepository.findById(storeId).orElseThrow(
-                () -> new IllegalStateException("store가 없습니다.")
-        );
-
-        if (user.getUserRole().equals(UserRole.OWNER)){
-            throw new IllegalStateException("고객만 주문 가능합니다.");
-        }
+        User user = validateUser(authUser);
+        Store store = validateStore(storeId);
+        validateRole(user);
 
         if (orderRepository.existsByUserAndStoreAndStatusNot(user, store, OrderStatus.COMPLETED)) {
             throw new IllegalStateException("이미 해당 가게에 주문한 기록이 있습니다.");
@@ -79,8 +71,6 @@ public class OrderService {
             Long menuId = m.getMenuId();
             int quantity = m.getQuantity();
             List<Long> optionIds = m.getOptionIds();
-            log.info("optionIds ={}",optionIds);
-            log.info("optionIds.size() ={}",optionIds.size());
 
             Menu menu = menuRepository.findById(menuId).orElseThrow(
                     () -> new IllegalStateException("menu가 없습니다.")
@@ -117,13 +107,9 @@ public class OrderService {
     }
 
     public Page<OrderResponse> getOrders(AuthUser authUser, Long storeId, int page, int size) {
-        User user = userRepository.findById(authUser.getId()).orElseThrow(
-                () -> new IllegalStateException("User가 없습니다.")
-        );
-
-        Store store = storeRepository.findById(storeId).orElseThrow(
-                () -> new IllegalStateException("store가 없습니다.")
-        );
+        User user = validateUser(authUser);
+        validateStore(storeId);
+        validateRole(user);
 
         // 클라이언트에서 1부터 전달된 페이지 번호를 0 기반으로 조정
         int adjustedPage = (page > 0) ? page - 1 : 0;
@@ -134,5 +120,25 @@ public class OrderService {
         // Page 조회
         Page<Order> orderPage = orderRepository.findOrdersWithMenus(storeId,authUser.getId(),pageable);
         return orderPage.map(OrderResponse::new);
+    }
+
+    private User validateUser(AuthUser authUser) {
+        User user = userRepository.findById(authUser.getId()).orElseThrow(
+                () -> new IllegalStateException("User가 없습니다.")
+        );
+        return user;
+    }
+
+    private Store validateStore(Long storeId) {
+        Store store = storeRepository.findById(storeId).orElseThrow(
+                () -> new IllegalStateException("store가 없습니다.")
+        );
+        return store;
+    }
+
+    private static void validateRole(User user) {
+        if (user.getUserRole().equals(UserRole.OWNER)){
+            throw new IllegalStateException("고객만 주문 가능합니다.");
+        }
     }
 }
