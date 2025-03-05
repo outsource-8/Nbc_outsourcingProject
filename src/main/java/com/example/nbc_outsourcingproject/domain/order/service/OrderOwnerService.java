@@ -107,9 +107,9 @@ public class OrderOwnerService {
                 () -> new IllegalStateException("주문 없음")
         );
 
-        if (dto.getStatus().equals(OrderStatus.ACCEPTED) || dto.getStatus().equals(OrderStatus.CANCELED)){
-            throw new IllegalStateException("주문 수락, 취소는 /accepted에서 하세요.");
-        }
+//        if (dto.getStatus().equals(OrderStatus.ACCEPTED) || dto.getStatus().equals(OrderStatus.CANCELED)){
+//            throw new IllegalStateException("주문 수락, 취소는 /accepted에서 하세요.");
+//        }
 
         OrderStatus status = order.getStatus();
         switch (status){
