@@ -1,7 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.menuoption.service;
 
 import com.example.nbc_outsourcingproject.config.cache.MyStoreCache;
-import com.example.nbc_outsourcingproject.domain.common.util.OwnerValidator;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.exception.details.InvalidStoreMenuException;
 import com.example.nbc_outsourcingproject.domain.menu.exception.details.MenuNotFoundException;
@@ -28,7 +27,6 @@ public class MenuOptionService {
     @Transactional
     public void createOption(Long userId, Long menuId, String text, Integer price) {
         Menu menu = validateMenuOfStore(userId, menuId);
-
         MenuOption menuOption = new MenuOption(menu, text, price);
         optionRepository.save(menuOption);
     }
@@ -40,12 +38,13 @@ public class MenuOptionService {
             return optionRepository.findByMenuId(menuId).stream().map(MenuOptionResponse::from).toList();
         }
 
-        MenuOption option = optionRepository.findById(optionId).orElseThrow(MenuOptionNotFoundException::new);
-
-        if (!option.getMenu().equals(menuRepository.findById(menuId))) {
-            throw new InvalidStoreMenuException();
+        // 가져오려는 옵션이 존재하지 않을 경우
+        if(optionRepository.existsById(optionId)){
+            throw new MenuOptionNotFoundException();
         }
 
+        // 가져오려는 옵션이 menu에 포함된 옵션이 아닐 경우
+        MenuOption option = optionRepository.findByIdAndMenu_Id(optionId, menuId).orElseThrow(InvalidStoreMenuException::new);
         return (List<MenuOptionResponse>) MenuOptionResponse.from(option);
     }
 
