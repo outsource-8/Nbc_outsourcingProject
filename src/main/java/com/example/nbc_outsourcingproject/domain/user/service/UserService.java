@@ -1,7 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.user.service;
 
-import com.example.nbc_outsourcingproject.config.PasswordEncoder;
-import com.example.nbc_outsourcingproject.domain.common.exception.InvalidRequestException;
+import com.example.nbc_outsourcingproject.config.resolver.PasswordEncoder;
+import com.example.nbc_outsourcingproject.domain.common.exception.details.InvalidRequestException;
 import com.example.nbc_outsourcingproject.domain.user.dto.request.UpdatePassword;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
