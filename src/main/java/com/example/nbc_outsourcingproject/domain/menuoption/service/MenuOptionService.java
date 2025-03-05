@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.menuoption.service;
 
+import com.example.nbc_outsourcingproject.config.cache.MyStoreCache;
 import com.example.nbc_outsourcingproject.domain.common.util.OwnerValidator;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.exception.details.InvalidStoreMenuException;
@@ -21,9 +22,9 @@ public class MenuOptionService {
 
     private final MenuRepository menuRepository;
     private final MenuOptionRepository optionRepository;
-    private final OwnerValidator ownerValidator;
+    private final MyStoreCache myStoreCache;
 
-    //TODO: repository 이렇게 가져오는 거 진짜 괜찮을까! -> updateOption()에서 menu.getName()도 사용
+    //TODO: 구현 후 시간이 남으면 component service 생성하여 다른 entity 가져오기
     @Transactional
     public void createOption(Long userId, Long menuId, String text, Integer price) {
         Menu menu = validateMenuOfStore(userId, menuId);
@@ -82,7 +83,7 @@ public class MenuOptionService {
     private Menu validateMenuOfStore(Long userId, Long menuId) {
         Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
         Long storeId = menuRepository.findByMenuIdForStoreId(menuId);
-        ownerValidator.validateStoreOwner(storeId, userId);
+        myStoreCache.validateStoreOwner(userId, storeId);
 
         return menu;
     }
