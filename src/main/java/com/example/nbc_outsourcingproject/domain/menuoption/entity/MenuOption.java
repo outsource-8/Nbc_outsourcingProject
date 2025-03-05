@@ -1,6 +1,8 @@
 package com.example.nbc_outsourcingproject.domain.menuoption.entity;
 
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
+import com.example.nbc_outsourcingproject.domain.order.entity.Order;
+import com.example.nbc_outsourcingproject.domain.order.entity.OrderMenu;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
@@ -24,6 +26,10 @@ public class MenuOption {
 
     @Min(0)
     private Integer price;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_menu_id")
+    private OrderMenu orderMenu;
 
 
     public MenuOption() {

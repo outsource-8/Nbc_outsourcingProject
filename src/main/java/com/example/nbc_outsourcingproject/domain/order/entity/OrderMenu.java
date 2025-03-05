@@ -1,8 +1,11 @@
 package com.example.nbc_outsourcingproject.domain.order.entity;
 
+import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,15 +31,18 @@ public class OrderMenu {
 //    private MenuOption menuOption;
 
     private int quantity;
-    private String currentOptionName;
-    private int currentOptionPrice;
 
-    public OrderMenu(Order order, String currentMenuName, int currentMenuPrice, int quantity, String currentOptionName, int currentOptionPrice) {
+    @OneToMany(mappedBy = "orderMenu", fetch = FetchType.LAZY)
+    private List<MenuOption> menuOptions;
+
+//    private String currentOptionName;
+//    private int currentOptionPrice;
+
+    public OrderMenu(Order order, String currentMenuName, int currentMenuPrice, int quantity, List<MenuOption> menuOptions) {
         this.order = order;
         this.currentMenuName = currentMenuName;
         this.currentMenuPrice = currentMenuPrice;
         this.quantity = quantity;
-        this.currentOptionName = currentOptionName;
-        this.currentOptionPrice = currentOptionPrice;
+        this.menuOptions = menuOptions;
     }
 }

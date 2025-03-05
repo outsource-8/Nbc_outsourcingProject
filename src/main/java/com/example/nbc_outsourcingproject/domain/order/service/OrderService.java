@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -74,18 +75,35 @@ public class OrderService {
         for (OrderSaveRequest m : menus) {
             Long menuId = m.getMenuId();
             int quantity = m.getQuantity();
-            Long optionId = m.getOptionId();
+            List<Long> optionIds = m.getOptionIds();
+            log.info("optionIds.size() ={}",optionIds.size());
 
             Menu menu = menuRepository.findById(menuId).orElseThrow(
                     () -> new IllegalStateException("menu가 없습니다.")
             );
 
-            MenuOption menuOption = menuOptionRepository.findById(optionId).orElseThrow(
-                    () -> new IllegalStateException("option이 없습니다.")
-            );
+//            List<MenuOption> menuOptions = menuOptionRepository.findByIdIn(optionIds).orElseThrow(
+//                    () -> new IllegalStateException("option이 없습니다.")
+//            );
+//            log.info("menuOptions.size() ={}",menuOptions.size());
 
-            OrderMenu orderMenu = new OrderMenu(order,menu.getName(),menu.getPrice(),quantity,menuOption.getText(),menuOption.getPrice());
-            totalAmount += menu.getPrice() * quantity + menuOption.getPrice();
+//            MenuOption menuOption = menuOptionRepository.findByIdAndMenu_Id(optionId, menuId).orElseThrow(
+//                    () -> new IllegalStateException("menu에 해당하는 option이 없습니다.")
+//            );
+
+             List<MenuOption> menuOptionList = menuOptionRepository.findByIdInAndMenu_Id(optionIds, menuId).orElseThrow(
+                     () -> new IllegalStateException("optionmenu이 없습니다.")
+             );
+            log.info("menuOptionList.size() ={}",menuOptionList.size());
+
+            if(optionIds.size() != menuOptionList.size()){
+                throw new IllegalStateException("메뉴에 해당하는 옵션이 아닙니다.");
+            }
+
+            OrderMenu orderMenu = new OrderMenu(order,menu.getName(),menu.getPrice(),quantity,menuOptionList);
+            int totalOptionAmount = menuOptionList.stream().mapToInt(MenuOption::getPrice).sum();
+            totalAmount += (menu.getPrice()+ totalOptionAmount) * quantity ;
+
             orderMenus.add(orderMenu);
         }
 
