@@ -1,8 +1,9 @@
-package com.example.nbc_outsourcingproject.config;
+package com.example.nbc_outsourcingproject.domain.common.exception;
 
 import com.example.nbc_outsourcingproject.domain.auth.exception.AuthException;
-import com.example.nbc_outsourcingproject.domain.common.exception.InvalidRequestException;
-import com.example.nbc_outsourcingproject.domain.common.exception.ServerException;
+import com.example.nbc_outsourcingproject.domain.common.exception.details.InvalidRequestException;
+import com.example.nbc_outsourcingproject.domain.common.exception.details.OutsourcingException;
+import com.example.nbc_outsourcingproject.domain.common.exception.details.ServerException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,6 +30,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleServerException(ServerException ex) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
         return getErrorResponse(status, ex.getMessage());
+    }
+
+    @ExceptionHandler(OutsourcingException.class)
+    public ResponseEntity<ErrorResponse> handleMenuException(OutsourcingException e) {
+        return new ResponseEntity<>(ErrorResponse.of(e.getErrorCode().getName(), e.getHttpStatus(), e.getMessage()), e.getHttpStatus());
     }
 
     public ResponseEntity<Map<String, Object>> getErrorResponse(HttpStatus status, String message) {
