@@ -1,8 +1,11 @@
 package com.example.nbc_outsourcingproject.domain.review.service;
 
+import com.example.nbc_outsourcingproject.domain.common.exception.UnauthorizedException;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReviewRequest;
+import com.example.nbc_outsourcingproject.domain.review.dto.request.UpdateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.CreateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.ReadReviewResponse;
+import com.example.nbc_outsourcingproject.domain.review.dto.response.UpdateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.entity.Review;
 import com.example.nbc_outsourcingproject.domain.review.repository.ReviewRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
@@ -69,5 +72,38 @@ public class ReviewService {
 
         return reviews
                 .map(ReadReviewResponse::toDto);
+    }
+
+    // 리뷰 수정
+    @Transactional
+    public UpdateReviewResponse updateReview(Long storeId, Long reviewId, Long userId, int newRating, String newContent) {
+        Review review = reviewRepository.findByStoreIdAndId(storeId, reviewId);
+
+        if (!userId.equals(review.getUser().getId())) {
+            throw new UnauthorizedException("작성자가 아닙니다.");
+        }
+
+        review.updateReview(newRating, newContent);
+        return UpdateReviewResponse.builder()
+                .id(review.getId())
+                .rating(review.getRating())
+                .content(review.getContent())
+                .orderId(review.getOrder().getId())
+                .userId(review.getUser().getId())
+                .storeId(review.getStore().getId())
+                .build();
+    }
+
+    // 리뷰 삭제
+    @Transactional
+    public void deleteReview(Long storeId, Long reviewId, Long userId) {
+
+        Review review = reviewRepository.findByStoreIdAndId(storeId, reviewId);
+
+        if (!userId.equals(review.getUser().getId())) {
+            throw new UnauthorizedException("작성자가 아닙니다.");
+        }
+
+        review.delete();
     }
 }
