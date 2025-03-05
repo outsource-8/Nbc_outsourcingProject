@@ -7,6 +7,7 @@ import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.exception.details.DuplicateMenuException;
 import com.example.nbc_outsourcingproject.domain.menu.exception.details.InvalidStoreMenuException;
 import com.example.nbc_outsourcingproject.domain.menu.exception.details.MenuNotFoundException;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.StoreNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
@@ -15,7 +16,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -64,9 +67,8 @@ public class MenuOwnerService {
         }
 
         // 가게 단건 메뉴
-        return (List<MenuResponse>) getMenu(storeId, menuId);
+        return Collections.singletonList(getMenu(storeId, menuId));
     }
-
 
     public void deleteMenu(Long storeId, Long userId, Long menuId) {
         myStoreCache.validateStoreOwner(userId, storeId);
@@ -74,17 +76,17 @@ public class MenuOwnerService {
         getMenu.deleteMenu();
     }
 
-
     private MenuResponse getMenu(Long storeId, Long menuId) {
         // 특정 메뉴 선택
-        Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
+        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
 
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException());
         // 선택한 메뉴가 해당 store의 메뉴가 아닐 경우 예외 처리
-        if (!getMenu.getStore().equals(storeRepository.findById(storeId))) {
+        if (!menu.getStore().equals(store)) {
             throw new InvalidStoreMenuException();
         }
 
-        return MenuResponse.from(getMenu);
+        return MenuResponse.from(menu);
     }
 
     private Menu modifiedMenu(Menu getMenu, String category, String name, Integer price, String info) {

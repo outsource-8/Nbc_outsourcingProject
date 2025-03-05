@@ -9,10 +9,12 @@ import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionRespon
 import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
 import com.example.nbc_outsourcingproject.domain.menuoption.exception.details.MenuOptionNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menuoption.repository.MenuOptionRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -23,6 +25,8 @@ public class MenuOptionService {
     private final MenuOptionRepository optionRepository;
     private final MyStoreCache myStoreCache;
 
+    private final ObjectMapper objectMapper;
+
     //TODO: 구현 후 시간이 남으면 component service 생성하여 다른 entity 가져오기
     @Transactional
     public void createOption(Long userId, Long menuId, String text, Integer price) {
@@ -31,22 +35,16 @@ public class MenuOptionService {
         optionRepository.save(menuOption);
     }
 
-
+    @Transactional(readOnly = true)
     public List<MenuOptionResponse> getOptions(Long userId, Long menuId, Long optionId) {
         validateMenuOfStore(userId, menuId);
         if (optionId == null) {
-            return optionRepository.findByMenuId(menuId).stream().map(MenuOptionResponse::from).toList();
+            List<MenuOption> menuOptionList = optionRepository.findByMenuId(menuId);
+            return menuOptionList.stream().map(MenuOptionResponse::from).toList();
         }
-
-        // 가져오려는 옵션이 존재하지 않을 경우
-        if(optionRepository.existsById(optionId)){
-            throw new MenuOptionNotFoundException();
-        }
-
-        // 가져오려는 옵션이 menu에 포함된 옵션이 아닐 경우
-        MenuOption option = optionRepository.findByIdAndMenu_Id(optionId, menuId).orElseThrow(InvalidStoreMenuException::new);
-        return (List<MenuOptionResponse>) MenuOptionResponse.from(option);
+        return Collections.singletonList(getOption(optionId, menuId));
     }
+
 
     @Transactional
     public MenuOptionResponse updateOption(Long userId, Long menuId, Long optionId, String text, Integer price) {
@@ -64,6 +62,18 @@ public class MenuOptionService {
         optionRepository.deleteById(optionId);
     }
 
+
+    private MenuOptionResponse getOption(Long menuId, Long optionId) {
+        // 가져오려는 옵션이 존재하지 않을 경우
+        if(! optionRepository.existsById(optionId)){
+            throw new MenuOptionNotFoundException();
+        }
+
+        // 가져오려는 옵션이 menu에 포함된 옵션이 아닐 경우
+        MenuOption option = optionRepository.findByIdAndMenu_Id(optionId, menuId).orElseThrow(InvalidStoreMenuException::new);
+
+        return MenuOptionResponse.from(option);
+    }
 
     private MenuOption modifiedOption(MenuOption option, String text, Integer price) {
         String updateText = text;
@@ -86,4 +96,7 @@ public class MenuOptionService {
 
         return menu;
     }
+
+
+
 }

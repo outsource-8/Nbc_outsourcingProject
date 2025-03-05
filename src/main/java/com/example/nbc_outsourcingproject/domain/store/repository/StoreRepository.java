@@ -27,4 +27,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     boolean existsByIdAndUser(Store store, User user);
 
+    @Query("SELECT s.id FROM Store s WHERE s.user.id = :userId")
+    List<Long> findStoreByUserId(Long userId);
 }
