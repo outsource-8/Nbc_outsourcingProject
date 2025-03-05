@@ -1,4 +1,4 @@
-package com.example.nbc_outsourcingproject.config;
+package com.example.nbc_outsourcingproject.config.resolver;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Component;

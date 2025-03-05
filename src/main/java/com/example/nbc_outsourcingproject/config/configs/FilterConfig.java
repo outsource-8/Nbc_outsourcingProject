@@ -1,4 +1,4 @@
-package com.example.nbc_outsourcingproject.config;
+package com.example.nbc_outsourcingproject.config.configs;
 
 import com.example.nbc_outsourcingproject.config.jwt.JwtFilter;
 import com.example.nbc_outsourcingproject.config.jwt.JwtUtil;

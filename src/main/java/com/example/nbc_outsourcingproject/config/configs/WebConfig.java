@@ -1,5 +1,6 @@
-package com.example.nbc_outsourcingproject.config;
+package com.example.nbc_outsourcingproject.config.configs;
 
+import com.example.nbc_outsourcingproject.config.resolver.AuthUserArgumentResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
