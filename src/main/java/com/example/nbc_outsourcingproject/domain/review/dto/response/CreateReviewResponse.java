@@ -7,7 +7,7 @@ import lombok.Getter;
 public class CreateReviewResponse {
 
     private final Long id;
-    private final int rating;
+    private final Integer rating;
     private final String content;
     private final Long orderId;
     private final Long userId;
@@ -16,7 +16,7 @@ public class CreateReviewResponse {
     @Builder
     public CreateReviewResponse(
             Long id,
-            int rating,
+            Integer rating,
             String content,
             Long orderId,
             Long userId,

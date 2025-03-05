@@ -1,17 +1,16 @@
 package com.example.nbc_outsourcingproject.domain.review.service;
 
-import com.example.nbc_outsourcingproject.domain.common.exception.UnauthorizedException;
+import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReviewRequest;
-import com.example.nbc_outsourcingproject.domain.review.dto.request.UpdateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.CreateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.ReadReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.UpdateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.entity.Review;
 import com.example.nbc_outsourcingproject.domain.review.repository.ReviewRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
-import com.example.nbc_outsourcingproject.domain.store.service.StoreService;
+import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
-import com.example.nbc_outsourcingproject.domain.user.service.UserService;
+import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,23 +22,24 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final UserService userService;
-    private final StoreService storeService;
-    private final OrderService orderService;
+    private final UserRepository userRepository;
+    private final StoreRepository storeRepository;
+    private final OrderRepository orderRepository;
 
     // review 생성
     @Transactional
-    public CreateReviewResponse createReview(CreateReviewRequest request, Long userId, Long storeId, Long orderId) {
-        User user = userService.getUserEntityById(userId);
-        Store store = storeService.getStoreEntityById(storeId);
-        Order order = orderService.getOrderEntityById(orderId);
+    public CreateReviewResponse createReview(CreateReviewRequest request, AuthUser user, Long storeId, Long orderId) {
+
+        User users = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다."));
+        Store store = storeRepository.findById(storeId).orElseThrow(() -> new IllegalStateException("존재하지 않는 가게입니다."));
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
 
         Review review = reviewRepository.save(
                 Review.builder()
                         .rating(request.getRating())
                         .content(request.getContent())
                         .order(order)
-                        .user(user)
+                        .user(users)
                         .store(store)
                         .build()
         );
@@ -76,11 +76,11 @@ public class ReviewService {
 
     // 리뷰 수정
     @Transactional
-    public UpdateReviewResponse updateReview(Long storeId, Long reviewId, Long userId, int newRating, String newContent) {
+    public UpdateReviewResponse updateReview(Long storeId, Long reviewId, AuthUser user, int newRating, String newContent) {
         Review review = reviewRepository.findByStoreIdAndId(storeId, reviewId);
 
-        if (!userId.equals(review.getUser().getId())) {
-            throw new UnauthorizedException("작성자가 아닙니다.");
+        if (!user.getId().equals(review.getUser().getId())) {
+            throw new IllegalStateException("작성자가 아닙니다.");
         }
 
         review.updateReview(newRating, newContent);
@@ -96,12 +96,12 @@ public class ReviewService {
 
     // 리뷰 삭제
     @Transactional
-    public void deleteReview(Long storeId, Long reviewId, Long userId) {
+    public void deleteReview(Long storeId, Long reviewId, AuthUser user) {
 
         Review review = reviewRepository.findByStoreIdAndId(storeId, reviewId);
 
-        if (!userId.equals(review.getUser().getId())) {
-            throw new UnauthorizedException("작성자가 아닙니다.");
+        if (!user.getId().equals(review.getUser().getId())) {
+            throw new IllegalStateException("작성자가 아닙니다.");
         }
 
         review.delete();

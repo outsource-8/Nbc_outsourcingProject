@@ -2,12 +2,15 @@ package com.example.nbc_outsourcingproject.domain.review.controller;
 
 
 import com.example.nbc_outsourcingproject.config.jwt.JwtUtil;
+import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
+import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.UpdateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.CreateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.ReadReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.UpdateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.service.ReviewService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,18 +32,13 @@ public class ReviewController {
     // 리뷰 생성
     @PostMapping(params = "orderId")
     public ResponseEntity<CreateReviewResponse> createReview(
-            @RequestBody CreateReviewRequest request,
+            @Valid @RequestBody CreateReviewRequest request,
             @PathVariable Long storeId,
             @RequestParam Long orderId,
-            @RequestHeader("Authorization") String token
-    ) {
+            @Auth AuthUser user
+            ) {
 
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        Long userId = jwtUtil.extractUserId(token);
-        return new ResponseEntity<>(reviewService.createReview(request, userId, storeId, orderId), HttpStatus.CREATED);
+        return new ResponseEntity<>(reviewService.createReview(request, user, storeId, orderId), HttpStatus.CREATED);
     }
 
     // 리뷰 조회(가게 기준)
@@ -58,9 +56,13 @@ public class ReviewController {
     @GetMapping(params = "rating")
     public ResponseEntity<Page<ReadReviewResponse>> getReviewsByRating(
             @PathVariable Long storeId,
-            @RequestParam int rating,
+            @RequestParam Integer rating,
             @PageableDefault(sort = "rating", direction = Sort.Direction.DESC) Pageable pageable
     ) {
+
+        if (rating == null || rating < 1 || rating > 5) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
         Page<ReadReviewResponse> response = reviewService.getReviewsByRating(storeId, rating, pageable);
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -70,29 +72,19 @@ public class ReviewController {
     public ResponseEntity<UpdateReviewResponse> updateReview(
             @PathVariable Long storeId,
             @PathVariable Long reviewId,
-            @RequestBody UpdateReviewRequest request,
-            @RequestHeader("Authorization") String token
+            @Valid @RequestBody UpdateReviewRequest request,
+            @Auth AuthUser user
     ) {
-        if(token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        Long userId = jwtUtil.extractUserId(token);
-        return new ResponseEntity<>(reviewService.updateReview(storeId, reviewId, userId, request.getRating(), request.getContent()), HttpStatus.OK);
+        return new ResponseEntity<>(reviewService.updateReview(storeId, reviewId, user, request.getRating(), request.getContent()), HttpStatus.OK);
     }
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<Void> deleteReview(
             @PathVariable Long storeId,
             @PathVariable Long reviewId,
-            @RequestHeader("Authorization") String token
+            @Auth AuthUser user
     ) {
-        if (token.startsWith("Bearer ")) {
-            token = token.substring(7);
-        }
-
-        Long userId = jwtUtil.extractUserId(token);
-        reviewService.deleteReview(storeId, reviewId, userId);
+        reviewService.deleteReview(storeId, reviewId, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

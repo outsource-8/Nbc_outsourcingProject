@@ -9,7 +9,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     Page<Review> findByStoreId(Long storeId, Pageable pageable);
 
-    Page<Review> findByStoreIdAndRating(Long storeId, int rating, Pageable pageable);
+    Page<Review> findByStoreIdAndRating(Long storeId, Integer rating, Pageable pageable);
 
     Review findByStoreIdAndId(Long storeId, Long id);
 }
