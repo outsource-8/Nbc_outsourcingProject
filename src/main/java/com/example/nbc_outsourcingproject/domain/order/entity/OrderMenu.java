@@ -28,14 +28,15 @@ public class OrderMenu {
 //    private MenuOption menuOption;
 
     private int quantity;
-//    private String currentOptionName;
-//    private int currentOptionPrice;
+    private String currentOptionName;
+    private int currentOptionPrice;
 
-
-    public OrderMenu(Order order, String currentMenuName, int currentMenuPrice, int quantity) {
+    public OrderMenu(Order order, String currentMenuName, int currentMenuPrice, int quantity, String currentOptionName, int currentOptionPrice) {
         this.order = order;
         this.currentMenuName = currentMenuName;
         this.currentMenuPrice = currentMenuPrice;
         this.quantity = quantity;
+        this.currentOptionName = currentOptionName;
+        this.currentOptionPrice = currentOptionPrice;
     }
 }

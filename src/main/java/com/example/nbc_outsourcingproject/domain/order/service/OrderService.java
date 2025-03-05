@@ -4,6 +4,8 @@ import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
+import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
+import com.example.nbc_outsourcingproject.domain.menuoption.repository.MenuOptionRepository;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveRequest;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
@@ -39,6 +41,7 @@ public class OrderService {
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
+    private final MenuOptionRepository menuOptionRepository;
 
     @Transactional
     public OrderSaveResponse createOrder(AuthUser authUser, Long storeId, List<OrderSaveRequest> menus) {
@@ -71,12 +74,18 @@ public class OrderService {
         for (OrderSaveRequest m : menus) {
             Long menuId = m.getMenuId();
             int quantity = m.getQuantity();
+            Long optionId = m.getOptionId();
 
             Menu menu = menuRepository.findById(menuId).orElseThrow(
                     () -> new IllegalStateException("menu가 없습니다.")
             );
-            OrderMenu orderMenu = new OrderMenu(order,menu.getName(),menu.getPrice(),quantity);
-            totalAmount += menu.getPrice() * quantity;
+
+            MenuOption menuOption = menuOptionRepository.findById(optionId).orElseThrow(
+                    () -> new IllegalStateException("option이 없습니다.")
+            );
+
+            OrderMenu orderMenu = new OrderMenu(order,menu.getName(),menu.getPrice(),quantity,menuOption.getText(),menuOption.getPrice());
+            totalAmount += menu.getPrice() * quantity + menuOption.getPrice();
             orderMenus.add(orderMenu);
         }
 

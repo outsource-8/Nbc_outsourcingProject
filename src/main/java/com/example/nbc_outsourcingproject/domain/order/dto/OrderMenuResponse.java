@@ -9,14 +9,16 @@ public class OrderMenuResponse {
     private final String menuName;
     private final int menuPrice;
     private final int quantity;
-//    private final String optionName;
-//    private final int optionPrice;
+    private final String optionName;
+    private final int optionPrice;
 
     public OrderMenuResponse(OrderMenu orderMenu) {
         this.id = orderMenu.getId();
         this.menuName = orderMenu.getCurrentMenuName();
         this.menuPrice = orderMenu.getCurrentMenuPrice();  // 메뉴 이름 포함
         this.quantity = orderMenu.getQuantity();
+        this.optionName = orderMenu.getCurrentOptionName();
+        this.optionPrice = orderMenu.getCurrentOptionPrice();
     }
 }
 
