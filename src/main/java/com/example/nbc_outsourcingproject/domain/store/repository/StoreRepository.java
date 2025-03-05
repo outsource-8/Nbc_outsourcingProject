@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.store.repository;
 
+import com.example.nbc_outsourcingproject.domain.common.exception.details.InvalidRequestException;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,11 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Store> findAllByUserId(@Param("userId") Long userId);
 
     boolean existsByIdAndUser(Store store, User user);
+
+    // 아이디로 가게 조회
+    default Store findStoreBy (Long storeId) {
+        return findById(storeId).orElseThrow(() -> new InvalidRequestException("해당 가게가 존재하지 않습니다."));
+    }
 
     @Query("SELECT s.id FROM Store s WHERE s.user.id = :userId")
     List<Long> findStoreByUserId(Long userId);

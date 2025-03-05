@@ -82,7 +82,7 @@ public class StoreOwnerService {
     @Transactional
     public StoreResponse updateStore(AuthUser user, Long storeId, StoreUpdateRequest storeUpdateRequest) {
         myStoreCache.validateStoreOwner(user.getId(), storeId);
-        Store store = findStoreById(storeId);
+        Store store = storeRepository.findStoreBy(storeId);
         store.updateInfo(
                 storeUpdateRequest.getName(),
                 storeUpdateRequest.getAddress(),
@@ -105,7 +105,7 @@ public class StoreOwnerService {
     // 가게 폐업 처리
     @Transactional
     public void shutDownStore(AuthUser user, Long storeId) {
-        Store store = findStoreById(storeId);
+        Store store = storeRepository.findStoreBy(storeId);
         myStoreCache.validateStoreOwner(user.getId(), storeId);
         removeStoreToCache(user.getId(), storeId);
         store.shutDown();
@@ -143,8 +143,4 @@ public class StoreOwnerService {
         }
     }
 
-    // 가게 조회 로직
-    private Store findStoreById(Long storeId) {
-        return storeRepository.findById(storeId).orElseThrow(() -> new InvalidRequestException("해당 가게가 존재하지 않습니다."));
-    }
 }
