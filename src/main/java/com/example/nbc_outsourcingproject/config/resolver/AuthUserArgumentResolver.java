@@ -1,4 +1,4 @@
-package com.example.nbc_outsourcingproject.config;
+package com.example.nbc_outsourcingproject.config.resolver;
 
 import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.auth.exception.AuthException;
