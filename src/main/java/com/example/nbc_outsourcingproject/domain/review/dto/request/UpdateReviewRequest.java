@@ -5,6 +5,6 @@ import lombok.Getter;
 @Getter
 public class UpdateReviewRequest {
 
-    private int rating;
+    private Integer rating;
     private String content;
 }

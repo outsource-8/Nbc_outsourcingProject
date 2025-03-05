@@ -17,7 +17,7 @@ public class Review {
     private Long id;
 
     @Column(nullable = false)
-    private int rating;
+    private Integer rating;
 
     @Column(nullable = false)
     private String content;
@@ -38,7 +38,7 @@ public class Review {
     private boolean deleted = false;
 
     @Builder
-    public Review(int rating, String content, Order order, User user, Store store) {
+    public Review(Integer rating, String content, Order order, User user, Store store) {
         this.rating = rating;
         this.content = content;
         this.order = order;
@@ -46,7 +46,7 @@ public class Review {
         this.store = store;
     }
 
-    public void updateReview(int newRating, String newContent) {
+    public void updateReview(Integer newRating, String newContent) {
         this.rating = newRating;
         this.content = newContent;
     }

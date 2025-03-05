@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 public class ReadReviewResponse {
 
     private final Long id;
-    private final int rating;
+    private final Integer rating;
     private final String content;
     private final Long orderId;
     private final Long userId;
@@ -18,7 +18,7 @@ public class ReadReviewResponse {
     @Builder
     public ReadReviewResponse(
             Long id,
-            int rating,
+            Integer rating,
             String content,
             Long orderId,
             Long userId,
