@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface OrderRepository extends JpaRepository<Order, Long> {
-    boolean existsByUserAndStoreAndStatus(User user, Store store, OrderStatus status);
+    boolean existsByUserAndStoreAndStatusNot(User user, Store store, OrderStatus status);
 
     @Query(value = "SELECT o FROM Order o JOIN FETCH o.orderMenus WHERE o.store.id = :storeId AND o.user.id = :userId",
             countQuery = "SELECT COUNT(o) FROM Order o WHERE o.store.id = :storeId AND o.user.id = :userId")
