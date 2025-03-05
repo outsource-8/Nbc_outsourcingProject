@@ -2,9 +2,6 @@ package com.example.nbc_outsourcingproject.domain.store.entity;
 
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,25 +21,20 @@ public class Store {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @NotBlank(message = "이름을 입력해주세요.")
-    @Size(max = 20, message = "이름의 최대 길이는 20자 입니다.")
+    @Column(unique = true)
     private String name;
 
-    @NotBlank(message = "주소를 입력해 주세요.")
     private String address;
 
-    @NotBlank(message = "주문 최소 금액을 입력해 주세요.")
-    @Min(value = 0, message = "최소 주문 금액은 0보다 커야 합니다.")
+    @Column(name = "min_order_amount")
     private int minOrderAmount;
 
+    @Column(name = "store_info")
     private String storeInfo;
-
-    @NotBlank(message = "오픈 시간을 입력해주세요.")
     private LocalTime opened;
-
-    @NotBlank(message = "마감 시간을 입력해주세요.")
     private LocalTime closed;
 
+    @Column(name = "is_shut_down")
     private Boolean isShutDown = false;
 
     public Store(
