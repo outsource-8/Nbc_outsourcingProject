@@ -34,6 +34,9 @@ public class Review {
     @JoinColumn(name = "store_id")
     private Store store;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
     @Builder
     public Review(int rating, String content, Order order, User user, Store store) {
         this.rating = rating;
@@ -41,5 +44,14 @@ public class Review {
         this.order = order;
         this.user = user;
         this.store = store;
+    }
+
+    public void updateReview(int newRating, String newContent) {
+        this.rating = newRating;
+        this.content = newContent;
+    }
+
+    public void delete() {
+        this.deleted = true;
     }
 }
