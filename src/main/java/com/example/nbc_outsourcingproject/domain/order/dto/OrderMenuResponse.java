@@ -12,14 +12,14 @@ public class OrderMenuResponse {
     private final String menuName;
     private final int menuPrice;
     private final int quantity;
-    private final List<MenuOptionResponse> menuOptionResponses;
+    private final String menuOptions;
 
     public OrderMenuResponse(OrderMenu orderMenu) {
         this.id = orderMenu.getId();
         this.menuName = orderMenu.getCurrentMenuName();
         this.menuPrice = orderMenu.getCurrentMenuPrice();  // 메뉴 이름 포함
         this.quantity = orderMenu.getQuantity();
-        this.menuOptionResponses = orderMenu.getMenuOptions().stream().map(MenuOptionResponse::from).toList();
+        this.menuOptions = orderMenu.getMenuOptions();
     }
 }
 

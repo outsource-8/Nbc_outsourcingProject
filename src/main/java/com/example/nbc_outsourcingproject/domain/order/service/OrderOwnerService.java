@@ -32,10 +32,8 @@ import java.util.List;
 public class OrderOwnerService {
 
     private final OrderRepository orderRepository;
-    private final OrderMenuRepository orderMenuRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
-    private final MenuRepository menuRepository;
 
     public Page<OrderResponse> getOrders(AuthUser authUser, Long storeId, int page, int size) {
         User user = userRepository.findById(authUser.getId()).orElseThrow(
@@ -106,10 +104,6 @@ public class OrderOwnerService {
         Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(
                 () -> new IllegalStateException("주문 없음")
         );
-
-//        if (dto.getStatus().equals(OrderStatus.ACCEPTED) || dto.getStatus().equals(OrderStatus.CANCELED)){
-//            throw new IllegalStateException("주문 수락, 취소는 /accepted에서 하세요.");
-//        }
 
         OrderStatus status = order.getStatus();
         switch (status){

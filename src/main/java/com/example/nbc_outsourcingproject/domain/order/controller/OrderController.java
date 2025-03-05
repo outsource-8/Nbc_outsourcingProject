@@ -7,6 +7,7 @@ import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveRequest;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
 import com.example.nbc_outsourcingproject.domain.order.service.OrderService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class OrderController {
             @Auth AuthUser authUser,
             @PathVariable Long storeId,
             @RequestBody List<OrderSaveRequest> menus
-    ){
+    ) throws JsonProcessingException {
         return ResponseEntity.ok(orderService.createOrder(authUser, storeId, menus));
     }
 
