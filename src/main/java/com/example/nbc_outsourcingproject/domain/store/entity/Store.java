@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.store.entity;
 
+import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreUpdateRequest;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -54,13 +55,13 @@ public class Store {
         this.closed = closed;
     }
 
-    public void updateInfo(String name, String address, int minOrderAmount, String storeInfo, LocalTime opened, LocalTime closed){
-        this.name = name;
-        this.address = address;
-        this.minOrderAmount = minOrderAmount;
-        this.storeInfo = storeInfo;
-        this.opened = opened;
-        this.closed = closed;
+    public void updateFrom(StoreUpdateRequest request) {
+        this.name = request.getName();
+        this.address = request.getAddress();
+        this.minOrderAmount = request.getMinOrderAmount();
+        this.storeInfo = request.getStoreInfo();
+        this.opened = request.getOpened();
+        this.closed = request.getClosed();
     }
 
     public void shutDown(){

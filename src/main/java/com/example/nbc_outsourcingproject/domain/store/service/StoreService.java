@@ -28,14 +28,7 @@ public class StoreService {
     public Page<StoreResponse> getStores(String storeName, int page, int size) {
         Pageable pageable = PageRequest.of(page - 1, size);
         Page<Store> stores = storeRepository.findStores(storeName, pageable);
-        return stores.map(store -> new StoreResponse(
-                store.getName(),
-                store.getStoreInfo(),
-                store.getAddress(),
-                store.getMinOrderAmount(),
-                store.getClosed(),
-                store.getOpened()
-        ));
+        return stores.map(StoreResponse::from);
     }
 
     // 가게 단건 조회 + 메뉴 다건 조회
