@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -38,6 +39,13 @@ public class JwtFilter implements Filter {
             chain.doFilter(request, response);
             return;
         }
+
+        List<String> whitelist = List.of("/swagger-ui/**", "/v3/api-docs/**");
+        if (whitelist.stream().anyMatch(url::startsWith)) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         log.info("확인 {}", httpRequest.getHeader("Authorization"));
         String bearerJwt = httpRequest.getHeader("Authorization");
         log.info("지워진 상태의 값에 bearer 가 붙어서 출력: {}", bearerJwt);

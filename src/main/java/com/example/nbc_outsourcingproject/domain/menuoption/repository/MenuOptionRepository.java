@@ -15,4 +15,7 @@ public interface MenuOptionRepository extends JpaRepository<MenuOption, Long> {
     Optional<MenuOption> findByIdAndMenu_Id(Long optionId, Long menuId);
 
     Optional<List<MenuOption>> findByIdInAndMenu_Id(List<Long> optionIds, Long menuId);
+
+    @Query("SELECT o FROM MenuOption o JOIN FETCH o.menu WHERE o.id = :optionId AND o.menu.id = :menuId ")
+    Boolean existsByIdAndMenuId(Long optionId, Long menuId);
 }

@@ -39,7 +39,6 @@ public class StoreOwnerService {
 
         User storeOwner = userRepository.findById(user.getId()).orElseThrow(() -> new InvalidRequestException("존재하지 않는 사용자입니다."));
 
-        validateOwner(user.getUserRole().toString());
         validateStoreCreationLimit(user);
 
         Store store = new Store(
@@ -83,8 +82,7 @@ public class StoreOwnerService {
     // 가게 정보 수정
     @Transactional
     public StoreResponse updateStore(AuthUser user, Long storeId, StoreUpdateRequest storeUpdateRequest) {
-        validateOwner(user.getUserRole().toString());
-        validateStoreOwnership(user.getId(), storeId);
+        myStoreCache.validateStoreOwner(user.getId(), storeId);
         Store store = findStoreById(storeId);
         store.updateInfo(
                 storeUpdateRequest.getName(),
@@ -109,16 +107,11 @@ public class StoreOwnerService {
     @Transactional
     public void shutDownStore(AuthUser user, Long storeId) {
         Store store = findStoreById(storeId);
-        validateStoreOwnership(user.getId(), storeId);
+        myStoreCache.validateStoreOwner(user.getId(), storeId);
+        removeStoreToCache(user.getId(), storeId);
         store.shutDown();
     }
 
-    // 사용자 OWNER 여부 검증
-    private void validateOwner(String role) {
-        if (!role.equals("OWNER")) {
-            throw new UnauthorizedException("Owner가 아닙니다.");
-        }
-    }
 
     // 생성된 가게 캐시 저장
     @Cacheable(key = "#userId", value = "myStores")
@@ -137,6 +130,7 @@ public class StoreOwnerService {
         List<Long> cacheStore = myStoreCache.getCacheStore(userId);
 
         // int index로 remove메서드가 실행될 위험이 있어 wrapper 타입을 정확하게 명시
+        storeCache.remove(userId);
         cacheStore.remove(Long.valueOf(storeId));
         return cacheStore;
     }
@@ -146,14 +140,6 @@ public class StoreOwnerService {
         List<Store> storesMine = storeRepository.findAllByUserId(user.getId());
         if (storesMine.size() >= 3) {
             throw new InvalidRequestException("가게는 최대 3개까지 생성할 수 있습니다.");
-        }
-    }
-
-    // 소유한 가게인지 확인
-    private void validateStoreOwnership (Long userId, Long storeId){
-        Store store = findStoreById(storeId);
-        if (!store.getUser().getId().equals(userId)) {
-            throw new UnauthorizedException("권한이 없습니다.");
         }
     }
 
