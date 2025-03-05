@@ -40,15 +40,13 @@ public class JwtFilter implements Filter {
             return;
         }
 
-        List<String> whitelist = List.of("/swagger-ui/**", "/v3/api-docs/**");
+        List<String> whitelist = List.of("/swagger-ui/", "/v3/api-docs/");
         if (whitelist.stream().anyMatch(url::startsWith)) {
             chain.doFilter(request, response);
             return;
         }
 
-        log.info("확인 {}", httpRequest.getHeader("Authorization"));
         String bearerJwt = httpRequest.getHeader("Authorization");
-        log.info("지워진 상태의 값에 bearer 가 붙어서 출력: {}", bearerJwt);
 
         if (bearerJwt == null) {
             httpResponse.sendError(HttpServletResponse.SC_BAD_REQUEST, "JWT 토큰이 필요합니다");

@@ -2,7 +2,7 @@ package com.example.nbc_outsourcingproject.domain.menu.entity;
 
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -33,7 +33,7 @@ public class Menu {
     private String name;
 
     @Column(nullable = false)
-    @Size(min = 0)
+    @Min(0)
     private Integer price;
 
     private String info;

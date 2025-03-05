@@ -2,6 +2,7 @@ package com.example.nbc_outsourcingproject.domain.menuoption.entity;
 
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
@@ -21,7 +22,7 @@ public class MenuOption {
     @Column(nullable = false)
     private String text;
 
-    @Size(min = 0)
+    @Min(0)
     private Integer price;
 
 

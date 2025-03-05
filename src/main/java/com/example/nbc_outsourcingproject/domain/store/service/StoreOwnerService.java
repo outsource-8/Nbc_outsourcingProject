@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -30,8 +31,6 @@ public class StoreOwnerService {
     private final MyStoreCache myStoreCache;
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
-
-    private final Map<Long, List<Long>> storeCache = new ConcurrentHashMap<>();
 
     // 가게 생성
     @Transactional
@@ -114,29 +113,30 @@ public class StoreOwnerService {
 
 
     // 생성된 가게 캐시 저장
-    @Cacheable(key = "#userId", value = "myStores")
-    public List<Long> saveStoreToCache (Long userId, Long storeId){
-        List<Long> cacheValue = storeCache.get(userId);
-        cacheValue.add(storeId);
-        storeCache.put(userId, cacheValue);
+    @CachePut(key = "#userId", value = "myStores")
+    public List<Long> saveStoreToCache(Long userId, Long storeId) {
+        List<Long> cacheValue = new ArrayList<>();
 
+        if (!cacheValue.isEmpty()) {
+            cacheValue = myStoreCache.getCacheStore(userId);
+        }
+
+        cacheValue.add(storeId);
         return cacheValue;
     }
 
     // 캐시 수정 <가게 삭제>
     @CachePut(key = "#userId", value = "myStores")
-    public List<Long> removeStoreToCache (Long userId, Long storeId){
-        myStoreCache.validateStoreOwner(userId, storeId);
-        List<Long> cacheStore = myStoreCache.getCacheStore(userId);
+    public List<Long> removeStoreToCache(Long userId, Long storeId) {
+        List<Long> cacheValue = myStoreCache.getCacheStore(userId);
 
         // int index로 remove메서드가 실행될 위험이 있어 wrapper 타입을 정확하게 명시
-        storeCache.remove(userId);
-        cacheStore.remove(Long.valueOf(storeId));
-        return cacheStore;
+        cacheValue.remove(Long.valueOf(storeId));
+        return cacheValue;
     }
 
     // 가게가 3개 초과시 생성 불가
-    private void validateStoreCreationLimit (AuthUser user){
+    private void validateStoreCreationLimit(AuthUser user) {
         List<Store> storesMine = storeRepository.findAllByUserId(user.getId());
         if (storesMine.size() >= 3) {
             throw new InvalidRequestException("가게는 최대 3개까지 생성할 수 있습니다.");
@@ -144,7 +144,7 @@ public class StoreOwnerService {
     }
 
     // 가게 조회 로직
-    private Store findStoreById (Long storeId){
+    private Store findStoreById(Long storeId) {
         return storeRepository.findById(storeId).orElseThrow(() -> new InvalidRequestException("해당 가게가 존재하지 않습니다."));
     }
 }

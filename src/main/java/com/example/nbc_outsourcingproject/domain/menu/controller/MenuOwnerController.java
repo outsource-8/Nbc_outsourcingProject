@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/owner/store")
+@RequestMapping("/owner/stores")
 @RequiredArgsConstructor
 public class MenuOwnerController {
 
