@@ -1,5 +1,6 @@
-package com.example.nbc_outsourcingproject.domain.common.exception;
+package com.example.nbc_outsourcingproject.domain.common.exception.details;
 
+import com.example.nbc_outsourcingproject.domain.common.exception.ErrorCode;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
