@@ -4,6 +4,7 @@ import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
+import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionRequest;
 import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
 import com.example.nbc_outsourcingproject.domain.menuoption.repository.MenuOptionRepository;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderResponse;
@@ -18,6 +19,8 @@ import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -29,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -43,9 +45,10 @@ public class OrderService {
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
     private final MenuOptionRepository menuOptionRepository;
+    private final ObjectMapper objectMapper;
 
     @Transactional
-    public OrderSaveResponse createOrder(AuthUser authUser, Long storeId, List<OrderSaveRequest> menus) {
+    public OrderSaveResponse createOrder(AuthUser authUser, Long storeId, List<OrderSaveRequest> menus) throws JsonProcessingException {
         User user = userRepository.findById(authUser.getId()).orElseThrow(
                 () -> new IllegalStateException("User가 없습니다.")
         );
@@ -76,33 +79,25 @@ public class OrderService {
             Long menuId = m.getMenuId();
             int quantity = m.getQuantity();
             List<Long> optionIds = m.getOptionIds();
+            log.info("optionIds ={}",optionIds);
             log.info("optionIds.size() ={}",optionIds.size());
 
             Menu menu = menuRepository.findById(menuId).orElseThrow(
                     () -> new IllegalStateException("menu가 없습니다.")
             );
 
-//            List<MenuOption> menuOptions = menuOptionRepository.findByIdIn(optionIds).orElseThrow(
-//                    () -> new IllegalStateException("option이 없습니다.")
-//            );
-//            log.info("menuOptions.size() ={}",menuOptions.size());
-
-//            MenuOption menuOption = menuOptionRepository.findByIdAndMenu_Id(optionId, menuId).orElseThrow(
-//                    () -> new IllegalStateException("menu에 해당하는 option이 없습니다.")
-//            );
-
-             List<MenuOption> menuOptionList = menuOptionRepository.findByIdInAndMenu_Id(optionIds, menuId).orElseThrow(
-                     () -> new IllegalStateException("optionmenu이 없습니다.")
-             );
-            log.info("menuOptionList.size() ={}",menuOptionList.size());
-
-            if(optionIds.size() != menuOptionList.size()){
+            if (!menuOptionRepository.existsAllByIdAndMenu_Id(optionIds, optionIds.size(),menu.getId())) {
                 throw new IllegalStateException("메뉴에 해당하는 옵션이 아닙니다.");
             }
 
-            OrderMenu orderMenu = new OrderMenu(order,menu.getName(),menu.getPrice(),quantity,menuOptionList);
+            List<MenuOption> menuOptionList = menuOptionRepository.findByIdIn(optionIds);
+            List<MenuOptionRequest> menuOptionRequests = menuOptionList.stream()
+                    .map(option -> new MenuOptionRequest(option.getText(), option.getPrice()))
+                    .toList();
+            String strOptionIds = objectMapper.writeValueAsString(menuOptionRequests).replace("\"","");
+            OrderMenu orderMenu = new OrderMenu(order,menu.getName(),menu.getPrice(),quantity,strOptionIds);
             int totalOptionAmount = menuOptionList.stream().mapToInt(MenuOption::getPrice).sum();
-            totalAmount += (menu.getPrice()+ totalOptionAmount) * quantity ;
+            totalAmount += (menu.getPrice()+ totalOptionAmount) * quantity;
 
             orderMenus.add(orderMenu);
         }
