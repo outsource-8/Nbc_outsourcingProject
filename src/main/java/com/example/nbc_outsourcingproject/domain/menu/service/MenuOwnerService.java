@@ -1,10 +1,12 @@
 package com.example.nbc_outsourcingproject.domain.menu.service;
 
-import com.example.nbc_outsourcingproject.domain.common.util.OwnerValidator;
+import com.example.nbc_outsourcingproject.config.cache.MyStoreCache;
 import com.example.nbc_outsourcingproject.domain.menu.dto.MenuResponse;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Category;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
-import com.example.nbc_outsourcingproject.domain.menu.exception.details.*;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.DuplicateMenuException;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.InvalidStoreMenuException;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
@@ -21,12 +23,10 @@ public class MenuOwnerService {
 
     private final StoreRepository storeRepository;
     private final MenuRepository menuRepository;
+    private final MyStoreCache myStoreCache;
 
-    private final OwnerValidator ownerValidator;
-
-
-    public void createMenu(Long storeId, Long authUserId, String category, String name, int price, String info) {
-        ownerValidator.validateStoreOwner(storeId, authUserId);
+    public void createMenu(Long storeId, Long userId, String category, String name, int price, String info) {
+        myStoreCache.validateStoreOwner(userId, storeId);
         Store store = storeRepository.findById(storeId).get();
 
         try {
@@ -44,8 +44,8 @@ public class MenuOwnerService {
 
 
     @Transactional
-    public MenuResponse updateMenu(Long storeId, Long authUserId, Long menuId, String category, String name, int price, String info) {
-        ownerValidator.validateStoreOwner(storeId, authUserId);
+    public MenuResponse updateMenu(Long storeId, Long userId, Long menuId, String category, String name, int price, String info) {
+        myStoreCache.validateStoreOwner(userId, storeId);
 
         Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
         Menu updateMenu = modifiedMenu(getMenu, category, name, price, info);
@@ -54,8 +54,8 @@ public class MenuOwnerService {
 
 
     @Transactional(readOnly = true)
-    public List<MenuResponse> getMenus(Long storeId, Long authUserId, Long menuId) {
-        ownerValidator.validateStoreOwner(storeId, authUserId);
+    public List<MenuResponse> getMenus(Long storeId, Long userId, Long menuId) {
+        myStoreCache.validateStoreOwner(userId, storeId);
 
         // 가게의 전체 메뉴
         if (menuId == null) {
@@ -64,19 +64,18 @@ public class MenuOwnerService {
         }
 
         // 가게 단건 메뉴
-        return (List<MenuResponse>) getMenu(storeId, authUserId, menuId);
+        return (List<MenuResponse>) getMenu(storeId, menuId);
     }
 
 
-    public void deleteMenu(Long storeId, Long authUserId, Long menuId) {
-        ownerValidator.validateStoreOwner(storeId, authUserId);
+    public void deleteMenu(Long storeId, Long userId, Long menuId) {
+        myStoreCache.validateStoreOwner(userId, storeId);
         Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
         getMenu.deleteMenu();
     }
 
 
-
-    private MenuResponse getMenu(Long storeId, Long authUserId, Long menuId) {
+    private MenuResponse getMenu(Long storeId, Long menuId) {
         // 특정 메뉴 선택
         Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
 
@@ -87,7 +86,6 @@ public class MenuOwnerService {
 
         return MenuResponse.from(getMenu);
     }
-
 
     private Menu modifiedMenu(Menu getMenu, String category, String name, Integer price, String info) {
         Category updateCategory = Category.of(category);
