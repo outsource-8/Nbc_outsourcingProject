@@ -1,10 +1,10 @@
 package com.example.nbc_outsourcingproject.global.cache;
 
+import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
 import com.example.nbc_outsourcingproject.global.exception.store.InvalidStoreOwner;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
-import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +33,7 @@ public class MyStoreCache {
     }
 
     // userId를 key로 이용해 저장된 myStores 반환
-    @Cacheable(key = "#userId", value = "myStores")
+    @CachePut(key = "#userId", value = "myStores")
     public List<Long> getCacheStore(Long userId) {
         List<Long> stores = storeRepository.findStoreByUserId(userId); // 사용자 ID로 상점 찾기
         if (stores.isEmpty()) {
