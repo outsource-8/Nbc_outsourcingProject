@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class MenuOwnerService {
 
     public void createMenu(Long storeId, Long userId, String category, String name, int price, String info) {
         myStoreCache.validateStoreOwner(userId, storeId);
-        Store store = storeRepository.findById(storeId).get();
+        Store store = getStore(storeId);
 
         try {
 
@@ -110,5 +111,9 @@ public class MenuOwnerService {
 
         // 업데이트
         return getMenu.update(updateCategory, updateName, updatePrice, updateInfo);
+    }
+
+    private Store getStore(Long storeId) {
+        return storeRepository.findByIdAndIsShutDown(storeId, false).orElseThrow(StoreNotFoundException::new);
     }
 }

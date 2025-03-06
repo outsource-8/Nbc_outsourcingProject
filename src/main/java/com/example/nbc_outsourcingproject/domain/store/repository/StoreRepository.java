@@ -38,4 +38,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 
     @Query("SELECT s.id FROM Store s WHERE s.user.id = :userId")
     List<Long> findStoreByUserId(Long userId);
+
+    Optional<Store> findByIdAndIsShutDown(Long id, Boolean isShutDown);
 }
