@@ -11,7 +11,9 @@ import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import com.example.nbc_outsourcingproject.global.cache.MyStoreCache;
 import com.example.nbc_outsourcingproject.global.exception.order.OrderNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.order.OrderStatusNotForAcceptanceException;
 import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -54,11 +56,11 @@ public class OrderOwnerService {
         myStoreCache.validateStoreOwner(user.getId(),store.getId());
 
         Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(
-                () -> new OrderNotFoundException()
+                OrderNotFoundException::new
         );
 
         if (!(dto.getStatus().equals(OrderStatus.ACCEPTED) || dto.getStatus().equals(OrderStatus.CANCELED))){
-            throw new IllegalStateException("주문 수락 혹은 취소 하세요.");
+            throw new OrderStatusNotForAcceptanceException();
         }
         order.updateAccepted(dto.getStatus());
         return new OrderAcceptedResponse(
@@ -81,7 +83,7 @@ public class OrderOwnerService {
         switch (status){
             case PENDING ->  throw new IllegalStateException("/accepted에서 주문 수락, 취소 하세요.");
             case ACCEPTED -> {
-                if (!dto.getStatus().equals(OrderStatus.COOKING)){
+                if (!(dto.getStatus().equals(OrderStatus.COOKING)||dto.getStatus().equals(OrderStatus.CANCELED))){
                     throw new IllegalStateException("현재 주문 수락 상태입니다. 다음 단계를 입력하세요.");
                 }
                 order.updateStatus(dto.getStatus());
@@ -90,13 +92,13 @@ public class OrderOwnerService {
                 throw new IllegalStateException("취소된 주문은 수정할 수 없습니다.");
             }
             case COOKING -> {
-                if (!dto.getStatus().equals(OrderStatus.DELIVERING)){
+                if (!(dto.getStatus().equals(OrderStatus.DELIVERING)||dto.getStatus().equals(OrderStatus.CANCELED))){
                     throw new IllegalStateException("현재 주문 조리중입니다. 다음 단계를 입력하세요.");
                 }
                 order.updateStatus(dto.getStatus());
             }
             case DELIVERING -> {
-                if (!dto.getStatus().equals(OrderStatus.COMPLETED)){
+                if (!(dto.getStatus().equals(OrderStatus.COMPLETED)||dto.getStatus().equals(OrderStatus.CANCELED))){
                     throw new IllegalStateException("현재 배달중입니다. 다음 단계를 입력하세요.");
                 }
                 order.updateStatus(dto.getStatus());
@@ -114,14 +116,14 @@ public class OrderOwnerService {
 
     private User validateUser(AuthUser authUser) {
         User user = userRepository.findById(authUser.getId()).orElseThrow(
-                () -> new IllegalStateException("User가 없습니다.")
+                UserNotFoundException::new
         );
         return user;
     }
 
     private Store validateStore(Long storeId) {
         Store store = storeRepository.findById(storeId).orElseThrow(
-                () -> new StoreNotFoundException()
+                StoreNotFoundException::new
         );
         return store;
     }
