@@ -24,6 +24,7 @@ import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.global.exception.menu.MenuOptionNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.order.MinOrderAmountException;
 import com.example.nbc_outsourcingproject.global.exception.order.OrderOnlyCustomerException;
 import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
 import com.example.nbc_outsourcingproject.global.exception.user.UserNotFoundException;
@@ -95,7 +96,7 @@ public class OrderService {
         }
 
         if (totalAmount < store.getMinOrderAmount()){
-            throw new IllegalStateException("최소주문금액보다 작습니다.");
+            throw new MinOrderAmountException();
         }
 
         validateBusinessHours(store);

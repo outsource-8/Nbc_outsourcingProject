@@ -8,6 +8,12 @@ import java.util.List;
 public class OrderSaveRequest {
 
     private Long menuId;
-    private int quantity;
     private List<Long> optionIds;
+    private int quantity;
+
+    public OrderSaveRequest(Long menuId, List<Long> optionIds, int quantity) {
+        this.menuId = menuId;
+        this.optionIds = optionIds;
+        this.quantity = quantity;
+    }
 }
