@@ -2,6 +2,8 @@ package com.example.nbc_outsourcingproject.domain.token.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
 import java.time.LocalDateTime;
 
@@ -10,6 +12,7 @@ import java.time.LocalDateTime;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@RedisHash(value = "refreshToken")
 // 리프레시 토큰을 DB에 저장하기 위해 엔티티 생성
 public class ReFreshToken {
 
@@ -27,9 +30,14 @@ public class ReFreshToken {
     @Column(nullable = false)
     private LocalDateTime createdAt;
 
-    public ReFreshToken(Long id, String refreshToken) {
+    @TimeToLive
+    private Long expiration;
+
+    public ReFreshToken(Long id, String refreshToken, LocalDateTime createdAt, Long expiration) {
         this.id = id;
         this.refreshToken = refreshToken;
+        this.createdAt = createdAt;
+        this.expiration = expiration;
     }
 
     public ReFreshToken update(String newRefreshToken) {

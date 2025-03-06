@@ -78,7 +78,6 @@ public class AuthService {
         log.info(reFreshToken.toString());
         reFreshTokenRepository.save(reFreshToken);
 
-
         servletResponse.setHeader("Authorization", access);
 
         setTokenToCookie(refresh, servletResponse);
