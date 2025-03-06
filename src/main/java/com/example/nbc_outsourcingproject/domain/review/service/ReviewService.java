@@ -1,9 +1,10 @@
 package com.example.nbc_outsourcingproject.domain.review.service;
 
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.order.entity.Order;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderRepository;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReviewRequest;
+import com.example.nbc_outsourcingproject.domain.review.dto.request.UpdateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.CreateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.ReadReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.UpdateReviewResponse;
@@ -13,6 +14,10 @@ import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
+import com.example.nbc_outsourcingproject.global.exception.order.OrderNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.review.ReviewNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.user.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +37,9 @@ public class ReviewService {
     @Transactional
     public CreateReviewResponse createReview(CreateReviewRequest request, AuthUser user, Long storeId, Long orderId) {
 
-        User users = userRepository.findById(user.getId()).orElseThrow(() -> new IllegalStateException("존재하지 않는 사용자입니다."));
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new IllegalStateException("존재하지 않는 가게입니다."));
-        Order order = orderRepository.findById(orderId).orElseThrow(() -> new IllegalStateException("존재하지 않는 주문입니다."));
+        User users = userRepository.findById(user.getId()).orElseThrow(UserNotFoundException::new);
+        Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
+        Order order = orderRepository.findById(orderId).orElseThrow(OrderNotFoundException::new);
 
         Review review = reviewRepository.save(
                 Review.builder()
@@ -78,14 +83,23 @@ public class ReviewService {
 
     // 리뷰 수정
     @Transactional
-    public UpdateReviewResponse updateReview(Long storeId, Long reviewId, AuthUser user, int newRating, String newContent) {
-        Review review = reviewRepository.findByStoreIdAndId(storeId, reviewId);
+    public UpdateReviewResponse updateReview(Long storeId, Long reviewId, AuthUser user, UpdateReviewRequest request) {
+        Review review = reviewRepository.findByStoreIdAndId(storeId, reviewId).orElseThrow(ReviewNotFoundException::new);
 
         if (!user.getId().equals(review.getUser().getId())) {
             throw new IllegalStateException("작성자가 아닙니다.");
         }
 
-        review.updateReview(newRating, newContent);
+        if (request.getRating() != null) {
+            review.updateRating(request.getRating());
+        }
+
+        if (request.getContent() != null) {
+            review.updateContent(request.getContent());
+        }
+
+        reviewRepository.save(review);
+
         return UpdateReviewResponse.builder()
                 .id(review.getId())
                 .rating(review.getRating())
@@ -100,7 +114,7 @@ public class ReviewService {
     @Transactional
     public void deleteReview(Long storeId, Long reviewId, AuthUser user) {
 
-        Review review = reviewRepository.findByStoreIdAndId(storeId, reviewId);
+        Review review = reviewRepository.findByStoreIdAndId(storeId, reviewId).orElseThrow(ReviewNotFoundException::new);
 
         if (!user.getId().equals(review.getUser().getId())) {
             throw new IllegalStateException("작성자가 아닙니다.");
