@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public enum OrderErrorCode implements ErrorCode {
     ORDER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 주문이 존재하지 않습니다."),
-    ORDER_ONLY_CUSTOMER(HttpStatus.BAD_REQUEST, "사장 아이디는 주문할 수 없습니다.");
+    ORDER_ONLY_CUSTOMER(HttpStatus.BAD_REQUEST, "고객만 주문할 수 없습니다."),
+    ORDER_AMOUNT_BELOW_MINIMUM(HttpStatus.BAD_REQUEST, "최소주문금액보다 주문 금액이 적습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

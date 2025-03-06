@@ -1,10 +1,10 @@
 package com.example.nbc_outsourcingproject.domain.order.service;
 
-import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.common.ConfirmStoreOpen;
 import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
+import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionRequest;
@@ -22,6 +22,11 @@ import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuOptionNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.order.OrderOnlyCustomerException;
+import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.user.UserNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -73,7 +78,7 @@ public class OrderService {
             );
 
             if (!menuOptionRepository.existsAllByIdAndMenu_Id(optionIds, optionIds.size(),menu.getId())) {
-                throw new IllegalStateException("메뉴에 해당하는 옵션이 아닙니다.");
+                throw new MenuOptionNotFoundException();
             }
 
             List<MenuOption> menuOptionList = menuOptionRepository.findByIdIn(optionIds);
@@ -117,7 +122,7 @@ public class OrderService {
 
     private User validateUser(AuthUser authUser) {
         return userRepository.findById(authUser.getId()).orElseThrow(
-                () -> new IllegalStateException("User가 없습니다.")
+                () -> new UserNotFoundException()
         );
     }
 
@@ -129,7 +134,7 @@ public class OrderService {
 
     private static void validateCustomerRole(User user) {
         if (user.getUserRole().equals(UserRole.OWNER)){
-            throw new IllegalStateException("고객만 주문 가능합니다.");
+            throw new OrderOnlyCustomerException();
         }
     }
 
