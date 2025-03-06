@@ -22,4 +22,6 @@ public interface MenuOptionRepository extends JpaRepository<MenuOption, Long> {
 
     @Query("SELECT COUNT(o) = :size FROM MenuOption o WHERE o.id IN :options AND o.menu.id = :menuId")
     boolean existsAllByIdAndMenu_Id(@Param("options") List<Long> options, @Param("size") long size, @Param("menuId")Long menuId);
+
+    List<MenuOption> findByIdIn(List<Long> optionIds);
 }
