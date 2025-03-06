@@ -3,7 +3,6 @@ package com.example.nbc_outsourcingproject.domain.review.dto.response;
 import com.example.nbc_outsourcingproject.domain.review.entity.Review;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.data.domain.Page;
 
 @Getter
 public class ReadReviewResponse {

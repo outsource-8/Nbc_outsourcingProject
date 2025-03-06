@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.review.entity;
 
+import com.example.nbc_outsourcingproject.domain.order.entity.Order;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import jakarta.persistence.*;
