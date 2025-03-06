@@ -3,6 +3,7 @@ package com.example.nbc_outsourcingproject.domain.review.entity;
 import com.example.nbc_outsourcingproject.domain.order.entity.Order;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
+import com.example.nbc_outsourcingproject.global.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @NoArgsConstructor
-public class Review {
+public class Review extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,9 +48,12 @@ public class Review {
         this.store = store;
     }
 
-    public void updateReview(Integer newRating, String newContent) {
-        this.rating = newRating;
+    public void updateContent(String newContent) {
         this.content = newContent;
+    }
+
+    public void updateRating(Integer rating) {
+        this.rating = rating;
     }
 
     public void delete() {
