@@ -1,4 +1,4 @@
-package com.example.nbc_outsourcingproject.domain.order.entity;
+package com.example.nbc_outsourcingproject.domain.common.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
