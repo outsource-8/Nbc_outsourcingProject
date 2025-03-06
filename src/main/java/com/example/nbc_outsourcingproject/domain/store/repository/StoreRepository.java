@@ -14,7 +14,7 @@ import java.util.Optional;
 public interface StoreRepository extends JpaRepository<Store, Long> {
 
     // 가게 다건 조회
-    @Query("SELECT s FROM Store s JOIN FETCH s.user WHERE s.isShutDown = false " +
+    @Query("SELECT s FROM Store s WHERE s.isShutDown = false " +
             "AND (:name IS NULL OR s.name LIKE CONCAT('%', :name, '%') ) " +
             "ORDER BY s.name")
     Page<Store> findStores(
@@ -30,7 +30,8 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     @Query("SELECT s FROM Store s WHERE s.id = :storeId AND s.isShutDown= false")
     Optional<Store> findStoreById(@Param("storeId") Long storeId);
 
-    @Query("SELECT s From Store s JOIN FETCH s.user WHERE s.user.id = :userId AND s.isShutDown = false ")
+    // 아이디로 가게 조회 -> orElseThrow
+    @Query("SELECT s From Store s WHERE s.user.id = :userId AND s.isShutDown = false ")
     default Store findStoreBy(Long storeId) {
         return findStoreById(storeId).orElseThrow(StoreNotFoundException::new);
     }
