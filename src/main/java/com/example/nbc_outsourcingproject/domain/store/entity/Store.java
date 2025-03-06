@@ -3,6 +3,7 @@ package com.example.nbc_outsourcingproject.domain.store.entity;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreUpdateRequest;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,6 +39,7 @@ public class Store {
     @Column(name = "is_shut_down")
     private Boolean isShutDown = false;
 
+    @Builder
     public Store(
             User user,
             String name,
