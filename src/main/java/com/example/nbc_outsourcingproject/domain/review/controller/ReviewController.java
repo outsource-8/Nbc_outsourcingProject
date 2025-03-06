@@ -1,7 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.review.controller;
 
 
-import com.example.nbc_outsourcingproject.config.jwt.JwtUtil;
 import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
 import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReviewRequest;
@@ -26,8 +25,6 @@ import org.springframework.web.bind.annotation.*;
 public class ReviewController {
 
     private final ReviewService reviewService;
-
-    private final JwtUtil jwtUtil;
 
     // 리뷰 생성
     @PostMapping(params = "orderId")
