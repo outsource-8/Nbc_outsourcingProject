@@ -1,8 +1,8 @@
 package com.example.nbc_outsourcingproject.domain.review.controller;
 
 
-import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
+import com.example.nbc_outsourcingproject.domain.auth.annotation.Auth;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.UpdateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.CreateReviewResponse;
@@ -72,7 +72,7 @@ public class ReviewController {
             @Valid @RequestBody UpdateReviewRequest request,
             @Auth AuthUser user
     ) {
-        return new ResponseEntity<>(reviewService.updateReview(storeId, reviewId, user, request.getRating(), request.getContent()), HttpStatus.OK);
+        return new ResponseEntity<>(reviewService.updateReview(storeId, reviewId, user, request), HttpStatus.OK);
     }
 
     @DeleteMapping("/{reviewId}")
