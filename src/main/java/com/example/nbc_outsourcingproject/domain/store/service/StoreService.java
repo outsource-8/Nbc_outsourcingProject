@@ -25,16 +25,19 @@ public class StoreService {
     private final MenuService menuService;
 
     // 가게 다건 조회
+    @Transactional(readOnly = true)
     public Page<StoreResponse> getStores(String storeName, int page, int size) {
-        Pageable pageable = PageRequest.of(page - 1, size);
+        int adjustedPage = (page > 0) ? page - 1 : 0;
+        Pageable pageable = PageRequest.of(adjustedPage, size);
         Page<Store> stores = storeRepository.findStores(storeName, pageable);
         return stores.map(StoreResponse::from);
     }
 
     // 가게 단건 조회 + 메뉴 다건 조회
-    public StoreDetailResponse getStoreDetail(Long storeId){
+    @Transactional(readOnly = true)
+    public StoreDetailResponse getStoreDetail(Long storeId) {
         Store store = storeRepository.findStoreBy(storeId);
         List<MenuResponse> menu = menuService.getMenu(store.getId());
-        return StoreDetailResponse.from(store,menu);
+        return StoreDetailResponse.from(store, menu);
     }
 }
