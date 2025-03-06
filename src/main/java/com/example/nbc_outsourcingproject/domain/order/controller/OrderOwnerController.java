@@ -1,8 +1,8 @@
 package com.example.nbc_outsourcingproject.domain.order.controller;
 
-import com.example.nbc_outsourcingproject.config.aop.annotation.Order;
-import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.global.aop.annotation.Order;
+import com.example.nbc_outsourcingproject.domain.auth.annotation.Auth;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.order.dto.*;
 import com.example.nbc_outsourcingproject.domain.order.service.OrderOwnerService;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.menuoption.controller;
 
-import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.domain.auth.annotation.Auth;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionRequest;
 import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionResponse;
 import com.example.nbc_outsourcingproject.domain.menuoption.service.MenuOptionService;

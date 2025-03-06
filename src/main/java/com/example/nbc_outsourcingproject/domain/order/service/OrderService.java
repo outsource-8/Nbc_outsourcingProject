@@ -1,9 +1,10 @@
 package com.example.nbc_outsourcingproject.domain.order.service;
 
 import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
-import com.example.nbc_outsourcingproject.domain.menu.exception.details.StoreNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionRequest;
 import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
@@ -14,7 +15,6 @@ import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
 import com.example.nbc_outsourcingproject.domain.order.entity.Order;
 import com.example.nbc_outsourcingproject.domain.order.entity.OrderMenu;
 import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
-import com.example.nbc_outsourcingproject.domain.order.exception.details.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderMenuRepository;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
@@ -75,7 +75,7 @@ public class OrderService {
             List<Long> optionIds = m.getOptionIds();
 
             Menu menu = menuRepository.findById(menuId).orElseThrow(
-                    () -> new MenuNotFoundException()
+                    MenuNotFoundException::new
             );
 
             if (!menuOptionRepository.existsAllByIdAndMenu_Id(optionIds, optionIds.size(),menu.getId())) {
@@ -132,7 +132,7 @@ public class OrderService {
 
     private Store validateStore(Long storeId) {
         return storeRepository.findById(storeId).orElseThrow(
-                () -> new StoreNotFoundException()
+                StoreNotFoundException::new
         );
     }
 

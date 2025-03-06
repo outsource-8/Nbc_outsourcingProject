@@ -1,13 +1,13 @@
 package com.example.nbc_outsourcingproject.domain.menu.service;
 
-import com.example.nbc_outsourcingproject.config.cache.MyStoreCache;
+import com.example.nbc_outsourcingproject.global.cache.MyStoreCache;
+import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.dto.MenuResponse;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Category;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
-import com.example.nbc_outsourcingproject.domain.menu.exception.details.DuplicateMenuException;
-import com.example.nbc_outsourcingproject.domain.menu.exception.details.InvalidStoreMenuException;
-import com.example.nbc_outsourcingproject.domain.menu.exception.details.MenuNotFoundException;
-import com.example.nbc_outsourcingproject.domain.menu.exception.details.StoreNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.menu.DuplicateMenuException;
+import com.example.nbc_outsourcingproject.global.exception.menu.InvalidStoreMenuException;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -50,7 +49,7 @@ public class MenuOwnerService {
     public MenuResponse updateMenu(Long storeId, Long userId, Long menuId, String category, String name, int price, String info) {
         myStoreCache.validateStoreOwner(userId, storeId);
 
-        Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
+        Menu getMenu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
         Menu updateMenu = modifiedMenu(getMenu, category, name, price, info);
         return MenuResponse.from(updateMenu);
     }
@@ -72,15 +71,15 @@ public class MenuOwnerService {
 
     public void deleteMenu(Long storeId, Long userId, Long menuId) {
         myStoreCache.validateStoreOwner(userId, storeId);
-        Menu getMenu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
+        Menu getMenu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
         getMenu.deleteMenu();
     }
 
     private MenuResponse getMenu(Long storeId, Long menuId) {
         // 특정 메뉴 선택
-        Menu menu = menuRepository.findById(menuId).orElseThrow(() -> new MenuNotFoundException());
+        Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
 
-        Store store = storeRepository.findById(storeId).orElseThrow(() -> new StoreNotFoundException());
+        Store store = storeRepository.findById(storeId).orElseThrow(StoreNotFoundException::new);
         // 선택한 메뉴가 해당 store의 메뉴가 아닐 경우 예외 처리
         if (!menu.getStore().equals(store)) {
             throw new InvalidStoreMenuException();

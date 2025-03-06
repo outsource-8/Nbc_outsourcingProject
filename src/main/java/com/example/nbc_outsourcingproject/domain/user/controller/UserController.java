@@ -1,10 +1,8 @@
 package com.example.nbc_outsourcingproject.domain.user.controller;
 
-import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.domain.auth.annotation.Auth;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.user.dto.request.UpdatePassword;
-import com.example.nbc_outsourcingproject.domain.user.entity.User;
-import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import com.example.nbc_outsourcingproject.domain.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

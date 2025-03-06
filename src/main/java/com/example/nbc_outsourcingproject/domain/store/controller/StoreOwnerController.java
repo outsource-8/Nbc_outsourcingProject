@@ -1,7 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.store.controller;
 
-import com.example.nbc_outsourcingproject.domain.common.annotation.Auth;
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.domain.auth.annotation.Auth;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreUpdateRequest;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;

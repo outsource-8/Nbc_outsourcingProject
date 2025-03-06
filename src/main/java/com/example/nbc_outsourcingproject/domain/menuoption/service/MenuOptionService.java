@@ -1,15 +1,14 @@
 package com.example.nbc_outsourcingproject.domain.menuoption.service;
 
-import com.example.nbc_outsourcingproject.config.cache.MyStoreCache;
+import com.example.nbc_outsourcingproject.global.cache.MyStoreCache;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
-import com.example.nbc_outsourcingproject.domain.menu.exception.details.InvalidStoreMenuException;
-import com.example.nbc_outsourcingproject.domain.menu.exception.details.MenuNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.menu.InvalidStoreMenuException;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionResponse;
 import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
-import com.example.nbc_outsourcingproject.domain.menuoption.exception.details.MenuOptionNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuOptionNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menuoption.repository.MenuOptionRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,8 +23,6 @@ public class MenuOptionService {
     private final MenuRepository menuRepository;
     private final MenuOptionRepository optionRepository;
     private final MyStoreCache myStoreCache;
-
-    private final ObjectMapper objectMapper;
 
     //TODO: 구현 후 시간이 남으면 component service 생성하여 다른 entity 가져오기
     @Transactional

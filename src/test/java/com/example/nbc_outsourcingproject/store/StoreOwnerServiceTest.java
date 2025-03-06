@@ -1,8 +1,8 @@
 package com.example.nbc_outsourcingproject.store;
 
 import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
-import com.example.nbc_outsourcingproject.domain.common.exception.details.UnauthorizedException;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
+import com.example.nbc_outsourcingproject.global.exception.store.UnauthorizedException;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
