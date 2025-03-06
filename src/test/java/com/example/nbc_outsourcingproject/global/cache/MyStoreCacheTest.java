@@ -1,14 +1,24 @@
 package com.example.nbc_outsourcingproject.global.cache;
 
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
+import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
+import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
+import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
+import com.example.nbc_outsourcingproject.domain.store.service.StoreOwnerService;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
+import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -20,8 +30,14 @@ class MyStoreCacheTest {
     @InjectMocks
     MyStoreCache myStoreCache;
 
+    @InjectMocks
+    StoreOwnerService storeOwnerService;
+
     @Mock
     StoreRepository storeRepository;
+
+    @Mock
+    UserRepository userRepository;
 
 
     @Test
@@ -72,4 +88,21 @@ class MyStoreCacheTest {
 
         assertEquals(myStoreCache.getCacheStore(userId), List.of(store1Id, store2Id));
     }
+
+    @Test
+    void 가게_생성_시_캐시_저장(){
+        Store store = new Store();
+        AuthUser authUser = new AuthUser(1L, "email@email.com", UserRole.OWNER);
+        StoreSaveRequest storeSaveRequest = new StoreSaveRequest("가게", "주소", 12000, "소개", LocalTime.of(12,30), LocalTime.of(21,00));
+
+        ReflectionTestUtils.setField(store, "id", 2L);
+        given(storeRepository.findStoreById(2L)).willReturn(Optional.of(store));
+        given(storeRepository.findStoreByUserId(authUser.getId())).willReturn(List.of(2L));
+
+        storeOwnerService.saveStore(authUser, storeSaveRequest);
+        List<Long> cacheStore = myStoreCache.getCacheStore(authUser.getId());
+
+        assertEquals(cacheStore.get(0), store.getId());
+    }
+
 }
