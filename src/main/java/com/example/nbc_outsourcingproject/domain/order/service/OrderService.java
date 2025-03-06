@@ -3,6 +3,7 @@ package com.example.nbc_outsourcingproject.domain.order.service;
 import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
+import com.example.nbc_outsourcingproject.domain.menu.exception.details.StoreNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionRequest;
 import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
@@ -13,6 +14,7 @@ import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
 import com.example.nbc_outsourcingproject.domain.order.entity.Order;
 import com.example.nbc_outsourcingproject.domain.order.entity.OrderMenu;
 import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
+import com.example.nbc_outsourcingproject.domain.order.exception.details.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderMenuRepository;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
@@ -73,7 +75,7 @@ public class OrderService {
             List<Long> optionIds = m.getOptionIds();
 
             Menu menu = menuRepository.findById(menuId).orElseThrow(
-                    () -> new IllegalStateException("menu가 없습니다.")
+                    () -> new MenuNotFoundException()
             );
 
             if (!menuOptionRepository.existsAllByIdAndMenu_Id(optionIds, optionIds.size(),menu.getId())) {
@@ -123,17 +125,15 @@ public class OrderService {
     }
 
     private User validateUser(AuthUser authUser) {
-        User user = userRepository.findById(authUser.getId()).orElseThrow(
+        return userRepository.findById(authUser.getId()).orElseThrow(
                 () -> new IllegalStateException("User가 없습니다.")
         );
-        return user;
     }
 
     private Store validateStore(Long storeId) {
-        Store store = storeRepository.findById(storeId).orElseThrow(
-                () -> new IllegalStateException("store가 없습니다.")
+        return storeRepository.findById(storeId).orElseThrow(
+                () -> new StoreNotFoundException()
         );
-        return store;
     }
 
     private static void validateRole(User user) {
