@@ -1,6 +1,8 @@
 package com.example.nbc_outsourcingproject.domain.review.service;
 
 import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.domain.order.entity.Order;
+import com.example.nbc_outsourcingproject.domain.order.repository.OrderRepository;
 import com.example.nbc_outsourcingproject.domain.review.dto.request.CreateReviewRequest;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.CreateReviewResponse;
 import com.example.nbc_outsourcingproject.domain.review.dto.response.ReadReviewResponse;
