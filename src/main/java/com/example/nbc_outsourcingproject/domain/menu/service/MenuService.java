@@ -17,7 +17,7 @@ public class MenuService {
 
     @Transactional(readOnly = true)
     public List<MenuResponse> getMenu(Long storeId) {
-        List<Menu> storeMenuList = menuRepository.findByStoreId(storeId);
+        List<Menu> storeMenuList = menuRepository.findByStoreIdAndIsDeleted(storeId, false);
         return storeMenuList.stream().map(MenuResponse::from).toList();
     }
 }
