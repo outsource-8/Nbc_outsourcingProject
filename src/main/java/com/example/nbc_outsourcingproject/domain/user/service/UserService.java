@@ -1,11 +1,11 @@
 package com.example.nbc_outsourcingproject.domain.user.service;
 
+import com.example.nbc_outsourcingproject.global.exception.user.InvalidatePasswordException;
+import com.example.nbc_outsourcingproject.global.exception.user.UserNotFoundException;
 import com.example.nbc_outsourcingproject.global.resolver.PasswordEncoder;
 import com.example.nbc_outsourcingproject.global.exception.auth.InvalidRequestException;
 import com.example.nbc_outsourcingproject.domain.user.dto.request.UpdatePassword;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
-import com.example.nbc_outsourcingproject.domain.user.exception.details.InvalidatePasswordException;
-import com.example.nbc_outsourcingproject.domain.user.exception.details.UserNotFoundException;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

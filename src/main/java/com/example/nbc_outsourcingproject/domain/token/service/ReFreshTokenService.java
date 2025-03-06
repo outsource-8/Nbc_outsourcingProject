@@ -1,8 +1,9 @@
 package com.example.nbc_outsourcingproject.domain.token.service;
 
-import com.example.nbc_outsourcingproject.domain.auth.exception.InvalidateRefreshTokenException;
 import com.example.nbc_outsourcingproject.domain.token.entity.ReFreshToken;
 import com.example.nbc_outsourcingproject.domain.token.repository.ReFreshTokenRepository;
+import com.example.nbc_outsourcingproject.global.exception.auth.AuthException;
+import com.example.nbc_outsourcingproject.global.exception.auth.InvalidateRefreshTokenException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
