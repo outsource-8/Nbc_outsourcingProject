@@ -1,6 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.user.service;
 
-import com.example.nbc_outsourcingproject.config.resolver.PasswordEncoder;
+import com.example.nbc_outsourcingproject.global.resolver.PasswordEncoder;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

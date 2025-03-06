@@ -1,13 +1,13 @@
 package com.example.nbc_outsourcingproject.domain.store.service;
 
-import com.example.nbc_outsourcingproject.config.cache.MyStoreCache;
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
+import com.example.nbc_outsourcingproject.global.cache.MyStoreCache;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreUpdateRequest;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
-import com.example.nbc_outsourcingproject.domain.store.exception.details.MaxStoreCreationException;
+import com.example.nbc_outsourcingproject.global.exception.store.MaxStoreCreationException;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
@@ -34,6 +34,7 @@ public class StoreOwnerService {
         User storeOwner = userRepository.findByIdOrElseThrow(user.getId());
         validateStoreCreationLimit(user);
         Store store = StoreSaveRequest.to(storeOwner, storeSaveRequest);
+        storeRepository.save(store);
         saveStoreToCache(user.getId(), store.getId()); //생성된 가게 캐시에 저장
         return StoreSaveResponse.from(store);
     }

@@ -1,13 +1,9 @@
 package com.example.nbc_outsourcingproject.domain.order.service;
 
-import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
-import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
-import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
+import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.order.dto.*;
 import com.example.nbc_outsourcingproject.domain.order.entity.Order;
-import com.example.nbc_outsourcingproject.domain.order.entity.OrderMenu;
 import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
-import com.example.nbc_outsourcingproject.domain.order.repository.OrderMenuRepository;
 import com.example.nbc_outsourcingproject.domain.order.repository.OrderRepository;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
@@ -20,10 +16,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Service

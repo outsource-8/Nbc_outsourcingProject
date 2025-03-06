@@ -1,7 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.user.repository;
 
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
-import com.example.nbc_outsourcingproject.domain.user.exception.details.UserNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.user.UserNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
