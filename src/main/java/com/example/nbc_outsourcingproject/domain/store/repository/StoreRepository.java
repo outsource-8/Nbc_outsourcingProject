@@ -1,6 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.store.repository;
 
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -40,4 +41,6 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
     List<Long> findStoreByUserId(Long userId);
 
     Optional<Store> findByIdAndIsShutDown(Long id, Boolean isShutDown);
+
+    Long user(User user);
 }
