@@ -25,19 +25,6 @@ public class AuthController {
         return authService.login(loginRequest, httpServletResponse);
     }
 
-//    @PatchMapping("/email")
-//    public void updateEamil(@Auth AuthUser authUser, @Valid @RequestBody updateEmailRequest updateEmailRequest) {
-//        authService.updateEamil(authUser.getId(), updateEmailRequest);
-//    }
-//
-//    @PatchMapping("/nickname")
-//    public void updateNickname(@Auth AuthUser authUser, @Valid @RequestBody updateNicknameRequest updateNicknameRequest) {
-//        authService.updateNickname(authUser.getId(), updateNicknameRequest);
-//    }
 
-//    @PatchMapping("/user/password")
-//    public void updatePassword(@Auth AuthUser authUser, @Valid@RequestBody updatePasswordRequest updatePasswordRequest) {
-//        authService.updatePassword(authUser.getEmail(), updatePasswordRequest);
-//    }
 
 }
