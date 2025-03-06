@@ -74,6 +74,13 @@ class OrderServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        orderMenuRepository.deleteAll();
+        orderRepository.deleteAll();
+        menuOptionRepository.deleteAll();
+        menuRepository.deleteAll();
+        storeRepository.deleteAll();
+        userRepository.deleteAll();
+
         User user = new User("user@naver.com", "USER1234", "user", "seoul", UserRole.USER);
         userRepository.save(user);
         AuthUser authUser = new AuthUser(user.getId(),user.getEmail(),user.getUserRole());
@@ -104,7 +111,7 @@ class OrderServiceIntegrationTest {
     @Test
     public void 고객_주문_정상_생성() throws JsonProcessingException {
         //given
-        OrderSaveRequest request = new OrderSaveRequest(1L, List.of(1L),orderMenu.getQuantity());
+        OrderSaveRequest request = new OrderSaveRequest(menu.getId(), List.of(menuOption.getId()),orderMenu.getQuantity());
         List<OrderSaveRequest> requests = new ArrayList<>();
         requests.add(request);
 
@@ -120,7 +127,7 @@ class OrderServiceIntegrationTest {
     @Test
     public void 고객_주문_최소주문금액_미달() throws JsonProcessingException {
         //given
-        OrderSaveRequest request = new OrderSaveRequest(1L, List.of(),1);
+        OrderSaveRequest request = new OrderSaveRequest(menu.getId(), List.of(),1);
         List<OrderSaveRequest> requests = new ArrayList<>();
         requests.add(request);
 

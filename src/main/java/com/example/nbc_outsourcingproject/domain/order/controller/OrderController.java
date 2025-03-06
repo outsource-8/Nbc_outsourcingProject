@@ -8,7 +8,9 @@ import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveRequest;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
 import com.example.nbc_outsourcingproject.domain.order.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -18,12 +20,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "User용 주문 API")
 public class OrderController {
 
     private final OrderService orderService;
 
     @Order
     @PostMapping("/stores/{storeId}/orders")
+    @Operation(summary = "주문 생성")
     public ResponseEntity<OrderSaveResponse> createOrder (
             @Parameter(hidden = true) @Auth AuthUser authUser,
             @PathVariable Long storeId,
@@ -33,8 +37,9 @@ public class OrderController {
     }
 
     @GetMapping("/stores/{storeId}/orders")
+    @Operation(summary = "주문 다건 조회")
     public ResponseEntity<Page<OrderResponse>> getOrders (
-            @Auth AuthUser authUser,
+            @Parameter(hidden = true) @Auth AuthUser authUser,
             @PathVariable Long storeId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
