@@ -2,27 +2,23 @@ package com.example.nbc_outsourcingproject.domain.store.service;
 
 import com.example.nbc_outsourcingproject.config.cache.MyStoreCache;
 import com.example.nbc_outsourcingproject.domain.common.dto.AuthUser;
-import com.example.nbc_outsourcingproject.domain.common.exception.details.InvalidRequestException;
-import com.example.nbc_outsourcingproject.domain.common.exception.details.UnauthorizedException;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreUpdateRequest;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.store.exception.details.MaxStoreCreationException;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @AllArgsConstructor
@@ -35,25 +31,11 @@ public class StoreOwnerService {
     // 가게 생성
     @Transactional
     public StoreSaveResponse saveStore(AuthUser user, @Valid StoreSaveRequest storeSaveRequest) {
-
-        User storeOwner = userRepository.findById(user.getId()).orElseThrow(() -> new InvalidRequestException("존재하지 않는 사용자입니다."));
-
+        User storeOwner = userRepository.findByIdOrElseThrow(user.getId());
         validateStoreCreationLimit(user);
-
-        Store store = new Store(
-                storeOwner,
-                storeSaveRequest.getName(),
-                storeSaveRequest.getAddress(),
-                storeSaveRequest.getMinOrderAmount(),
-                storeSaveRequest.getStoreInfo(),
-                storeSaveRequest.getOpened(),
-                storeSaveRequest.getClosed()
-        );
-
-        Store savedStore = storeRepository.save(store);
-        saveStoreToCache(user.getId(), savedStore.getId()); //생성된 가게 캐시에 저장
-
-        return StoreSaveResponse.from(savedStore);
+        Store store = StoreSaveRequest.to(storeOwner, storeSaveRequest);
+        saveStoreToCache(user.getId(), store.getId()); //생성된 가게 캐시에 저장
+        return StoreSaveResponse.from(store);
     }
 
     // 소유한 가게 조회
@@ -110,7 +92,7 @@ public class StoreOwnerService {
     private void validateStoreCreationLimit(AuthUser user) {
         List<Store> storesMine = storeRepository.findAllByUserId(user.getId());
         if (storesMine.size() >= 3) {
-            throw new InvalidRequestException("가게는 최대 3개까지 생성할 수 있습니다.");
+            throw new MaxStoreCreationException();
         }
     }
 

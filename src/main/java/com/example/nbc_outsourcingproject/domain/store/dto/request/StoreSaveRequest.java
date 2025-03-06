@@ -1,20 +1,22 @@
 package com.example.nbc_outsourcingproject.domain.store.dto.request;
 
+import com.example.nbc_outsourcingproject.domain.store.entity.Store;
+import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 
 @Getter
-@NoArgsConstructor
 @AllArgsConstructor
-public class StoreSaveRequest {
+@Builder
+public class  StoreSaveRequest {
 
     @NotBlank(message = "이름을 입력해주세요.")
     @Size(max = 20, message = "이름의 최대 길이는 20자 입니다.")
@@ -36,6 +38,18 @@ public class StoreSaveRequest {
     @NotNull(message = "마감 시간을 입력해주세요.")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:MM")
     private LocalTime closed;
+
+    public static Store to (User user, StoreSaveRequest request){
+        return Store.builder()
+                .user(user)
+                .name(request.getName())
+                .address(request.getAddress())
+                .minOrderAmount(request.getMinOrderAmount())
+                .storeInfo(request.getStoreInfo())
+                .opened(request.getOpened())
+                .closed(request.getClosed())
+                .build();
+    }
 
 }
 
