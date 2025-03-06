@@ -9,6 +9,7 @@ import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
+import com.example.nbc_outsourcingproject.global.cache.MyStoreCache;
 import com.example.nbc_outsourcingproject.global.exception.order.OrderNotFoundException;
 import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,12 @@ public class OrderOwnerService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
+    private final MyStoreCache myStoreCache;
 
     public Page<OrderResponse> getOrders(AuthUser authUser, Long storeId, int page, int size) {
         User user = validateUser(authUser);
         Store store = validateStore(storeId);
-        validateStoreOwner(store,user);
+        myStoreCache.validateStoreOwner(user.getId(),store.getId());
 
         // 클라이언트에서 1부터 전달된 페이지 번호를 0 기반으로 조정
         int adjustedPage = (page > 0) ? page - 1 : 0;
@@ -49,7 +51,7 @@ public class OrderOwnerService {
     public OrderAcceptedResponse updateOrderAccepted(AuthUser authUser, Long storeId, OrderAcceptedRequest dto) {
         User user = validateUser(authUser);
         Store store = validateStore(storeId);
-        validateStoreOwner(store,user);
+        myStoreCache.validateStoreOwner(user.getId(),store.getId());
 
         Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(
                 () -> new OrderNotFoundException()
@@ -69,7 +71,7 @@ public class OrderOwnerService {
     public OrderStatusResponse updateOrderStatus(AuthUser authUser, Long storeId, OrderStatusRequest dto) {
         User user = validateUser(authUser);
         Store store = validateStore(storeId);
-        validateStoreOwner(store, user);
+        myStoreCache.validateStoreOwner(user.getId(),store.getId());
 
         Order order = orderRepository.findById(dto.getOrderId()).orElseThrow(
                 () -> new OrderNotFoundException()
@@ -122,11 +124,5 @@ public class OrderOwnerService {
                 () -> new StoreNotFoundException()
         );
         return store;
-    }
-
-    private static void validateStoreOwner(Store store, User user) {
-        if (store.getUser().getId() != user.getId()){
-            throw new IllegalStateException("본인 가게가 아닙니다.");
-        }
     }
 }
