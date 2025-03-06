@@ -9,6 +9,5 @@ public class OrderSaveRequest {
 
     private Long menuId;
     private int quantity;
-//    private Long optionId;
     private List<Long> optionIds;
 }

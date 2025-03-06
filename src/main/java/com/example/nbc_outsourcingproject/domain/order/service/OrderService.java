@@ -54,26 +54,13 @@ public class OrderService {
     public OrderSaveResponse createOrder(AuthUser authUser, Long storeId, List<OrderSaveRequest> menus) throws JsonProcessingException {
         User user = validateUser(authUser);
         Store store = validateStore(storeId);
-        validateRole(user);
-
-        log.info(String.valueOf(ConfirmStoreOpen.isOpened(store.getOpened(), store.getClosed())));
-
-        if (! ConfirmStoreOpen.isOpened(store.getOpened(), store.getClosed())) {
-            throw new StoreNotFoundException();
-        }
-
-        if (orderRepository.existsByUserAndStoreAndStatusNot(user, store, OrderStatus.COMPLETED)) {
-            throw new IllegalStateException("이미 해당 가게에 주문한 기록이 있습니다.");
-        }
-
-        if (menus == null || menus.isEmpty()) {
-            throw new IllegalStateException("주문 내역이 없습니다.");
-        }
+        validateCustomerRole(user);
+        validateOrderRequest(menus, user, store);
 
         int totalAmount = 0;
 
         List<OrderMenu> orderMenus = new ArrayList<>();
-        Order order = new Order(user, store);
+        Order order = new Order(user,store);
         orderRepository.save(order);
 
         for (OrderSaveRequest m : menus) {
@@ -85,32 +72,28 @@ public class OrderService {
                     MenuNotFoundException::new
             );
 
-            if (!menuOptionRepository.existsAllByIdAndMenu_Id(optionIds, optionIds.size(), menu.getId())) {
+            if (!menuOptionRepository.existsAllByIdAndMenu_Id(optionIds, optionIds.size(),menu.getId())) {
                 throw new IllegalStateException("메뉴에 해당하는 옵션이 아닙니다.");
             }
 
             List<MenuOption> menuOptionList = menuOptionRepository.findByIdIn(optionIds);
             List<MenuOptionRequest> menuOptionRequests
                     = menuOptionList.stream()
-                    .map(option -> new MenuOptionRequest(option.getText(), option.getPrice()))
-                    .toList();
-            String strOptionIds = objectMapper.writeValueAsString(menuOptionRequests).replace("\"", "");
-            OrderMenu orderMenu = new OrderMenu(order, menu.getName(), menu.getPrice(), quantity, strOptionIds);
+                                    .map(option -> new MenuOptionRequest(option.getText(), option.getPrice()))
+                                    .toList();
+            String strOptionIds = objectMapper.writeValueAsString(menuOptionRequests).replace("\"","");
+            OrderMenu orderMenu = new OrderMenu(order,menu.getName(),menu.getPrice(),quantity,strOptionIds);
             int totalOptionAmount = menuOptionList.stream().mapToInt(MenuOption::getPrice).sum();
-            totalAmount += (menu.getPrice() + totalOptionAmount) * quantity;
+            totalAmount += (menu.getPrice()+ totalOptionAmount) * quantity;
 
             orderMenus.add(orderMenu);
         }
 
-        if (totalAmount < store.getMinOrderAmount()) {
+        if (totalAmount < store.getMinOrderAmount()){
             throw new IllegalStateException("최소주문금액보다 작습니다.");
         }
 
-        //FIXME: 익일 영업 시간 계산 삭제 필요
-//        LocalTime now = LocalTime.now();
-//        if (now.isBefore(store.getOpened()) || now.isAfter(store.getClosed())) {
-//            throw new IllegalStateException("영업시간이 아닙니다.");
-//        }
+        validateBusinessHours(store);
         orderMenuRepository.saveAll(orderMenus);
         order.update(totalAmount, OrderStatus.PENDING);
         return new OrderSaveResponse(order.getId());
@@ -119,7 +102,7 @@ public class OrderService {
     public Page<OrderResponse> getOrders(AuthUser authUser, Long storeId, int page, int size) {
         User user = validateUser(authUser);
         validateStore(storeId);
-        validateRole(user);
+        validateCustomerRole(user);
 
         // 클라이언트에서 1부터 전달된 페이지 번호를 0 기반으로 조정
         int adjustedPage = (page > 0) ? page - 1 : 0;
@@ -128,7 +111,7 @@ public class OrderService {
         PageRequest pageable = PageRequest.of(adjustedPage, size, Sort.by("createdAt").descending());
 
         // Page 조회
-        Page<Order> orderPage = orderRepository.findOrdersWithMenus(storeId, authUser.getId(), pageable);
+        Page<Order> orderPage = orderRepository.findOrdersWithMenus(storeId,authUser.getId(),pageable);
         return orderPage.map(OrderResponse::new);
     }
 
@@ -144,9 +127,26 @@ public class OrderService {
         );
     }
 
-    private static void validateRole(User user) {
-        if (user.getUserRole().equals(UserRole.OWNER)) {
+    private static void validateCustomerRole(User user) {
+        if (user.getUserRole().equals(UserRole.OWNER)){
             throw new IllegalStateException("고객만 주문 가능합니다.");
+        }
+    }
+
+    private void validateOrderRequest(List<OrderSaveRequest> menus, User user, Store store) {
+        if (orderRepository.existsByUserAndStoreAndStatusNot(user, store, OrderStatus.COMPLETED)) {
+            throw new IllegalStateException("이미 해당 가게에 주문한 기록이 있습니다.");
+        }
+
+        if (menus == null || menus.isEmpty()) {
+            throw new IllegalStateException("주문 내역이 없습니다.");
+        }
+    }
+
+    private static void validateBusinessHours(Store store) {
+        LocalTime now = LocalTime.now();
+        if (! ConfirmStoreOpen.isOpened(store.getOpened(), store.getClosed())) {
+            throw new IllegalStateException("영업시간이 아닙니다.");
         }
     }
 }
