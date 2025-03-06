@@ -1,14 +1,15 @@
 package com.example.nbc_outsourcingproject.domain.menuoption.service;
 
-import com.example.nbc_outsourcingproject.global.cache.MyStoreCache;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
-import com.example.nbc_outsourcingproject.global.exception.menu.InvalidStoreMenuException;
-import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionResponse;
 import com.example.nbc_outsourcingproject.domain.menuoption.entity.MenuOption;
-import com.example.nbc_outsourcingproject.global.exception.menu.MenuOptionNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menuoption.repository.MenuOptionRepository;
+import com.example.nbc_outsourcingproject.global.cache.MyStoreCache;
+import com.example.nbc_outsourcingproject.global.exception.menu.InvalidStoreMenuException;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuAlreadyDeletedException;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuOptionNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +40,7 @@ public class MenuOptionService {
             List<MenuOption> menuOptionList = optionRepository.findByMenuId(menuId);
             return menuOptionList.stream().map(MenuOptionResponse::from).toList();
         }
-        return Collections.singletonList(getOption(optionId, menuId));
+        return Collections.singletonList(getOption(menuId, optionId));
     }
 
 
@@ -53,9 +54,12 @@ public class MenuOptionService {
         return MenuOptionResponse.of(menu.getName(), updateOption.getText(), updateOption.getPrice());
     }
 
-
+    @Transactional
     public void deleteOption(Long userId, Long menuId, Long optionId) {
         validateMenuOfStore(userId, menuId);
+        if (!optionRepository.existsById(optionId)) {
+            throw new MenuOptionNotFoundException();
+        }
         optionRepository.deleteById(optionId);
     }
 
@@ -73,14 +77,14 @@ public class MenuOptionService {
     }
 
     private MenuOption modifiedOption(MenuOption option, String text, Integer price) {
-        String updateText = text;
-        Integer updatePrice = price;
+        String updateText = option.getText();
+        Integer updatePrice = option.getPrice();
 
-        if (text == null) {
-            updateText = option.getText();
+        if (!text.isBlank()) {
+            updateText = text;
         }
-        if (price == null) {
-            updatePrice = option.getPrice();
+        if (price != 0) {
+            updatePrice = price;
         }
 
         return option.updateOption(updateText, updatePrice);
@@ -90,6 +94,10 @@ public class MenuOptionService {
         Menu menu = menuRepository.findById(menuId).orElseThrow(MenuNotFoundException::new);
         Long storeId = menuRepository.findByMenuIdForStoreId(menuId);
         myStoreCache.validateStoreOwner(userId, storeId);
+
+        if (menu.getIsDeleted()) {
+            throw new MenuAlreadyDeletedException();
+        }
 
         return menu;
     }
