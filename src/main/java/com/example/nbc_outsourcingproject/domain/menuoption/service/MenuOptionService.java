@@ -62,7 +62,7 @@ public class MenuOptionService {
 
     private MenuOptionResponse getOption(Long menuId, Long optionId) {
         // 가져오려는 옵션이 존재하지 않을 경우
-        if(! optionRepository.existsById(optionId)){
+        if (!optionRepository.existsById(optionId)) {
             throw new MenuOptionNotFoundException();
         }
 
@@ -93,7 +93,5 @@ public class MenuOptionService {
 
         return menu;
     }
-
-
 
 }

@@ -61,7 +61,7 @@ public class StoreOwnerController {
             @Parameter(hidden = true) @Auth AuthUser user,
             @PathVariable Long storeId
     ) {
-        storeOwnerService.shutDownStore(user,storeId);
+        storeOwnerService.shutDownStore(user, storeId);
         return ResponseEntity.noContent().build();
     }
 }

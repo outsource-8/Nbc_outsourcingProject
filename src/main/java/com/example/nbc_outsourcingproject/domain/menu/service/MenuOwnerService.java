@@ -33,7 +33,6 @@ public class MenuOwnerService {
         Store store = getStore(storeId);
 
         try {
-
             Category getCategory = Category.of(category);
             Menu menu = new Menu(store, getCategory, name, price, info);
 

@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.token.service;
 
+import com.example.nbc_outsourcingproject.domain.auth.exception.InvalidateRefreshTokenException;
 import com.example.nbc_outsourcingproject.domain.token.entity.ReFreshToken;
 import com.example.nbc_outsourcingproject.domain.token.repository.ReFreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,6 @@ public class ReFreshTokenService {
 
     public ReFreshToken findByToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(()-> new IllegalArgumentException("Invalid refresh token"));
+                .orElseThrow(InvalidateRefreshTokenException::new);
     }
 }
