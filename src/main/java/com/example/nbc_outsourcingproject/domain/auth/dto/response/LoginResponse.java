@@ -5,9 +5,11 @@ import lombok.Getter;
 @Getter
 public class LoginResponse {
 
-    private final String bearerToken;
+    private final String accessToken;
+    private final String refreshToken;
 
-    public LoginResponse(String bearerToken) {
-        this.bearerToken = bearerToken;
+    public LoginResponse(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
     }
 }

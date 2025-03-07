@@ -1,5 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.auth.enums;
 
+import com.example.nbc_outsourcingproject.global.exception.auth.InvalidRoleException;
+
 import java.util.Arrays;
 
 public enum UserRole {
@@ -9,6 +11,6 @@ public enum UserRole {
         return Arrays.stream(UserRole.values())
                 .filter(r -> r.name().equalsIgnoreCase(role))
                 .findFirst()
-                .orElseThrow(()-> new IllegalArgumentException("유효하지 않은 권한입니다"));
+                .orElseThrow(InvalidRoleException::new);
     }
 }
