@@ -2,6 +2,7 @@ package com.example.nbc_outsourcingproject.domain.order.service;
 
 import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
+import com.example.nbc_outsourcingproject.domain.common.ConfirmStoreOpen;
 import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
@@ -55,6 +56,10 @@ public class OrderService {
         Store store = validateStore(storeId);
         validateRole(user);
 
+        if (!ConfirmStoreOpen.isOpened(store.getOpened(), store.getClosed())) {
+            throw new StoreNotFoundException();
+        }
+
         if (orderRepository.existsByUserAndStoreAndStatusNot(user, store, OrderStatus.COMPLETED)) {
             throw new IllegalStateException("이미 해당 가게에 주문한 기록이 있습니다.");
         }
@@ -99,10 +104,11 @@ public class OrderService {
             throw new IllegalStateException("최소주문금액보다 작습니다.");
         }
 
-        LocalTime now = LocalTime.now();
-        if (now.isBefore(store.getOpened()) || now.isAfter(store.getClosed())){
-            throw new IllegalStateException("영업시간이 아닙니다.");
-        }
+//        LocalTime now = LocalTime.now();
+//        if (now.isBefore(store.getOpened()) || now.isAfter(store.getClosed())){
+//            throw new IllegalStateException("영업시간이 아닙니다.");
+//        }
+
         orderMenuRepository.saveAll(orderMenus);
         order.update(totalAmount, OrderStatus.PENDING);
         return new OrderSaveResponse(order.getId());

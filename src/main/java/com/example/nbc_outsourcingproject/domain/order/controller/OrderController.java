@@ -8,6 +8,7 @@ import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveRequest;
 import com.example.nbc_outsourcingproject.domain.order.dto.OrderSaveResponse;
 import com.example.nbc_outsourcingproject.domain.order.service.OrderService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class OrderController {
     @Order
     @PostMapping("/stores/{storeId}/orders")
     public ResponseEntity<OrderSaveResponse> createOrder (
-            @Auth AuthUser authUser,
+            @Parameter(hidden = true) @Auth AuthUser authUser,
             @PathVariable Long storeId,
             @RequestBody List<OrderSaveRequest> menus
     ) throws JsonProcessingException {
@@ -33,7 +34,7 @@ public class OrderController {
 
     @GetMapping("/stores/{storeId}/orders")
     public ResponseEntity<Page<OrderResponse>> getOrders (
-            @Auth AuthUser authUser,
+            @Parameter(hidden = true) @Auth AuthUser authUser,
             @PathVariable Long storeId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int size
