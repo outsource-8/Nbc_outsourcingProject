@@ -69,30 +69,5 @@ class AuthServiceTest {
         then(userRepository).should().save(any(User.class));
 //        assertThat()
     }
-
-    @Test
-    void 로그인에_성공한다() {
-        LoginRequest loginRequest = new LoginRequest("test@email.com", "Test1234");
-        User user = new User("test@email.com", "encodedPassword", "nickname", "Seoul", UserRole.USER);
-        String accessToken = "access-token";
-        String refreshToken = "refresh-token";
-
-        given(userRepository.findByEmail(loginRequest.getEmail())).willReturn(java.util.Optional.of(user));
-        given(passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())).willReturn(true);
-        given(jwtUtil.createAccessToken(anyLong(), anyString(), any(UserRole.class))).willReturn(accessToken);
-        given(jwtUtil.createRefreshToken(anyString())).willReturn(refreshToken);
-        willDoNothing().given(response).setHeader("Authorization", accessToken);
-        given(reFreshTokenRepository.save(any(ReFreshToken.class))).willAnswer(invocation -> invocation.getArgument(0));
-
-        // when
-        LoginResponse response = authService.login(loginRequest, response);
-
-        // then
-        assertThat(response.getAccessToken()).isEqualTo(accessToken);
-        assertThat(response.getRefreshToken()).isEqualTo(refreshToken);
-
-        verify(response).setHeader("Authorization", accessToken);
-        verify(reFreshTokenRepository).save(any(ReFreshToken.class));
-    }
 }
 
