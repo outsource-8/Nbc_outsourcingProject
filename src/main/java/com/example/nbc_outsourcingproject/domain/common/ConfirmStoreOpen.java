@@ -1,18 +1,11 @@
 package com.example.nbc_outsourcingproject.domain.common;
 
-import lombok.extern.slf4j.Slf4j;
-
 import java.time.LocalTime;
 
-@Slf4j
 public class ConfirmStoreOpen {
 
     public static boolean isOpened(LocalTime openTime, LocalTime closeTime) {
         LocalTime now = LocalTime.now();
-
-        log.info(now.toString());
-        log.info(openTime.toString());
-        log.info(closeTime.toString());
 
         // 당일 영업
         // closeTime이 지금 시간보다 뒤
