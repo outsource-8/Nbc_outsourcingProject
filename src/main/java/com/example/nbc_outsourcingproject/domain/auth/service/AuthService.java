@@ -1,13 +1,13 @@
 package com.example.nbc_outsourcingproject.domain.auth.service;
 
+import com.example.nbc_outsourcingproject.global.exception.auth.*;
+import com.example.nbc_outsourcingproject.global.exception.errorcode.AuthErrorCode;
 import com.example.nbc_outsourcingproject.global.resolver.PasswordEncoder;
 import com.example.nbc_outsourcingproject.domain.auth.dto.request.LoginRequest;
 import com.example.nbc_outsourcingproject.domain.auth.dto.request.SignupRequest;
 import com.example.nbc_outsourcingproject.domain.auth.dto.response.LoginResponse;
 import com.example.nbc_outsourcingproject.domain.auth.dto.response.SignupResponse;
 import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
-import com.example.nbc_outsourcingproject.global.exception.auth.AuthException;
-import com.example.nbc_outsourcingproject.global.exception.auth.InvalidRequestException;
 import com.example.nbc_outsourcingproject.global.jwt.JwtUtil;
 import com.example.nbc_outsourcingproject.domain.token.entity.ReFreshToken;
 import com.example.nbc_outsourcingproject.domain.token.repository.ReFreshTokenRepository;
@@ -33,9 +33,9 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     @Transactional
-    public SignupResponse signup(SignupRequest signupRequest) {
+    public void signup(SignupRequest signupRequest) {
         if (userRepository.existsByEmail(signupRequest.getEmail())) {
-            throw new InvalidRequestException("이미 사용중인 이메일입니다");
+            throw new InvaildEmailException();
         }
 
         String encodedPassword = passwordEncoder.encode(signupRequest.getPassword());
@@ -51,38 +51,28 @@ public class AuthService {
         );
         User savedUser = userRepository.save(user);
 
-        String bearerToken = jwtUtil.createAccessToken(savedUser.getId(), savedUser.getEmail(),userRole);
-
-        return new SignupResponse(bearerToken);
+        return;
     }
 
     @Transactional
     public LoginResponse login(LoginRequest loginRequest, HttpServletResponse servletResponse) {
         log.info("AuthService::Login::Call");
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(
-                () -> new InvalidRequestException("가입되지 않은 유저입니다"));
+                NotFoundUserException::new);
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new AuthException("비밀번호가 일치하지 않습니다");
+            throw new WrongPasswordException();
         }
         String access = jwtUtil.createAccessToken(user.getId(), user.getEmail(),user.getUserRole());
-        String refresh = jwtUtil.createRefreshToken(user.getId());
+        String refresh = jwtUtil.createRefreshToken(String.valueOf(user.getId()));
 
-
-        ReFreshToken reFreshToken = ReFreshToken.builder()
-                        .userId(user.getId())
-                                .refreshToken(refresh)
-                                        .createdAt(LocalDateTime.now())
-                                                .build();
-
-        log.info(reFreshToken.toString());
-        reFreshTokenRepository.save(reFreshToken);
+        reFreshTokenRepository.save(new ReFreshToken(jwtUtil.substringToken(refresh), user.getId()));
 
         servletResponse.setHeader("Authorization", access);
 
         setTokenToCookie(refresh, servletResponse);
-//        String bearerToken = jwtUtil.createAccessToken(auth.getId(), auth.getEmail(),auth.getUserRole());
-        return new LoginResponse(refresh);
+
+        return new LoginResponse(access, refresh);
     }
 
     private void setTokenToCookie(String bearerToken, HttpServletResponse servletResponse) {
