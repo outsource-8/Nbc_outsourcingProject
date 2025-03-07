@@ -1,5 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.store.service;
 
+import com.example.nbc_outsourcingproject.global.exception.store.MaxStoreCreationException;
 import com.example.nbc_outsourcingproject.global.cache.MyStoreCache;
 import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreSaveRequest;
@@ -7,7 +8,6 @@ import com.example.nbc_outsourcingproject.domain.store.dto.request.StoreUpdateRe
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreResponse;
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
 import com.example.nbc_outsourcingproject.domain.store.entity.Store;
-import com.example.nbc_outsourcingproject.global.exception.store.MaxStoreCreationException;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
@@ -17,6 +17,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,11 +71,6 @@ public class StoreOwnerService {
     @CachePut(key = "#userId", value = "myStores")
     public List<Long> saveStoreToCache(Long userId, Long storeId) {
         List<Long> cacheValue = new ArrayList<>();
-
-        if (!cacheValue.isEmpty()) {
-            cacheValue = myStoreCache.getCacheStore(userId);
-        }
-
         cacheValue.add(storeId);
         return cacheValue;
     }

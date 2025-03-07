@@ -1,7 +1,6 @@
 package com.example.nbc_outsourcingproject.domain.order.dto;
 
 import com.example.nbc_outsourcingproject.domain.order.entity.Order;
-import com.example.nbc_outsourcingproject.domain.order.entity.OrderMenu;
 import com.example.nbc_outsourcingproject.domain.order.enums.OrderStatus;
 import lombok.Getter;
 

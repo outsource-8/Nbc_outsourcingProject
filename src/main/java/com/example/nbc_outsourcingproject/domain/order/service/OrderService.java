@@ -1,10 +1,10 @@
 package com.example.nbc_outsourcingproject.domain.order.service;
 
-import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.auth.AuthUser;
 import com.example.nbc_outsourcingproject.domain.common.ConfirmStoreOpen;
 import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
 import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
+import com.example.nbc_outsourcingproject.domain.auth.enums.UserRole;
 import com.example.nbc_outsourcingproject.domain.menu.entity.Menu;
 import com.example.nbc_outsourcingproject.domain.menu.repository.MenuRepository;
 import com.example.nbc_outsourcingproject.domain.menuoption.dto.MenuOptionRequest;
@@ -22,6 +22,12 @@ import com.example.nbc_outsourcingproject.domain.store.entity.Store;
 import com.example.nbc_outsourcingproject.domain.store.repository.StoreRepository;
 import com.example.nbc_outsourcingproject.domain.user.entity.User;
 import com.example.nbc_outsourcingproject.domain.user.repository.UserRepository;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.menu.MenuOptionNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.order.MinOrderAmountException;
+import com.example.nbc_outsourcingproject.global.exception.order.OrderOnlyCustomerException;
+import com.example.nbc_outsourcingproject.global.exception.store.StoreNotFoundException;
+import com.example.nbc_outsourcingproject.global.exception.user.UserNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -54,19 +60,8 @@ public class OrderService {
     public OrderSaveResponse createOrder(AuthUser authUser, Long storeId, List<OrderSaveRequest> menus) throws JsonProcessingException {
         User user = validateUser(authUser);
         Store store = validateStore(storeId);
-        validateRole(user);
-
-        if (!ConfirmStoreOpen.isOpened(store.getOpened(), store.getClosed())) {
-            throw new StoreNotFoundException();
-        }
-
-        if (orderRepository.existsByUserAndStoreAndStatusNot(user, store, OrderStatus.COMPLETED)) {
-            throw new IllegalStateException("이미 해당 가게에 주문한 기록이 있습니다.");
-        }
-
-        if (menus == null || menus.isEmpty()) {
-            throw new IllegalStateException("주문 내역이 없습니다.");
-        }
+        validateCustomerRole(user);
+        validateOrderRequest(menus, user, store);
 
         int totalAmount = 0;
 
@@ -84,7 +79,7 @@ public class OrderService {
             );
 
             if (!menuOptionRepository.existsAllByIdAndMenu_Id(optionIds, optionIds.size(),menu.getId())) {
-                throw new IllegalStateException("메뉴에 해당하는 옵션이 아닙니다.");
+                throw new MenuOptionNotFoundException();
             }
 
             List<MenuOption> menuOptionList = menuOptionRepository.findByIdIn(optionIds);
@@ -101,14 +96,10 @@ public class OrderService {
         }
 
         if (totalAmount < store.getMinOrderAmount()){
-            throw new IllegalStateException("최소주문금액보다 작습니다.");
+            throw new MinOrderAmountException();
         }
 
-//        LocalTime now = LocalTime.now();
-//        if (now.isBefore(store.getOpened()) || now.isAfter(store.getClosed())){
-//            throw new IllegalStateException("영업시간이 아닙니다.");
-//        }
-
+        validateBusinessHours(store);
         orderMenuRepository.saveAll(orderMenus);
         order.update(totalAmount, OrderStatus.PENDING);
         return new OrderSaveResponse(order.getId());
@@ -117,7 +108,7 @@ public class OrderService {
     public Page<OrderResponse> getOrders(AuthUser authUser, Long storeId, int page, int size) {
         User user = validateUser(authUser);
         validateStore(storeId);
-        validateRole(user);
+        validateCustomerRole(user);
 
         // 클라이언트에서 1부터 전달된 페이지 번호를 0 기반으로 조정
         int adjustedPage = (page > 0) ? page - 1 : 0;
@@ -132,7 +123,7 @@ public class OrderService {
 
     private User validateUser(AuthUser authUser) {
         return userRepository.findById(authUser.getId()).orElseThrow(
-                () -> new IllegalStateException("User가 없습니다.")
+                () -> new UserNotFoundException()
         );
     }
 
@@ -142,9 +133,26 @@ public class OrderService {
         );
     }
 
-    private static void validateRole(User user) {
+    private static void validateCustomerRole(User user) {
         if (user.getUserRole().equals(UserRole.OWNER)){
-            throw new IllegalStateException("고객만 주문 가능합니다.");
+            throw new OrderOnlyCustomerException();
+        }
+    }
+
+    private void validateOrderRequest(List<OrderSaveRequest> menus, User user, Store store) {
+        if (orderRepository.existsByUserAndStoreAndStatusNot(user, store, OrderStatus.COMPLETED)) {
+            throw new IllegalStateException("이미 해당 가게에 주문한 기록이 있습니다.");
+        }
+
+        if (menus == null || menus.isEmpty()) {
+            throw new IllegalStateException("주문 내역이 없습니다.");
+        }
+    }
+
+    private static void validateBusinessHours(Store store) {
+        LocalTime now = LocalTime.now();
+        if (! ConfirmStoreOpen.isOpened(store.getOpened(), store.getClosed())) {
+            throw new IllegalStateException("영업시간이 아닙니다.");
         }
     }
 }

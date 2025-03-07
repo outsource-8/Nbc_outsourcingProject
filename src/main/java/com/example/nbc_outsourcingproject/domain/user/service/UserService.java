@@ -1,5 +1,7 @@
 package com.example.nbc_outsourcingproject.domain.user.service;
 
+import com.example.nbc_outsourcingproject.global.exception.user.InvalidatePasswordException;
+import com.example.nbc_outsourcingproject.global.exception.user.UserNotFoundException;
 import com.example.nbc_outsourcingproject.global.resolver.PasswordEncoder;
 import com.example.nbc_outsourcingproject.global.exception.auth.InvalidRequestException;
 import com.example.nbc_outsourcingproject.domain.user.dto.request.UpdatePassword;
@@ -17,12 +19,10 @@ public class UserService {
 
     public void updatePassword(long userId, UpdatePassword updatePassword) {
 
-        User user = userRepository.findById(userId).orElseThrow(
-                ()-> new InvalidRequestException("해당 유저 없습니다.")
-        );
+        User user = userRepository.findById(userId).orElseThrow(UserNotFoundException::new);
 
         if (!passwordEncoder.matches(updatePassword.getOldPassword(), user.getPassword())) {
-            throw new InvalidRequestException("잘못된 비밀번호 입니다.");
+            throw new InvalidatePasswordException();
         }
 
         if (passwordEncoder.matches(updatePassword.getNewPassword(), user.getPassword())) {

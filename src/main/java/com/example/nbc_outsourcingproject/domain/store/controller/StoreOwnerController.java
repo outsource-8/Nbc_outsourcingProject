@@ -8,6 +8,7 @@ import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreRespons
 import com.example.nbc_outsourcingproject.domain.store.dto.response.StoreSaveResponse;
 import com.example.nbc_outsourcingproject.domain.store.service.StoreOwnerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,7 @@ public class StoreOwnerController {
     @PostMapping("/owner/stores")
     @Operation(summary = "가게 생성")
     public ResponseEntity<StoreSaveResponse> createStore(
-            @Auth AuthUser user,
+            @Parameter(hidden = true) @Auth AuthUser user,
             @Valid @RequestBody StoreSaveRequest storeSaveRequest
     ) {
         return ResponseEntity.ok(storeOwnerService.saveStore(user, storeSaveRequest));
@@ -37,7 +38,7 @@ public class StoreOwnerController {
     @GetMapping("/owner/stores")
     @Operation(summary = "소유한 가게 조회")
     public ResponseEntity<List<StoreResponse>> getStoresMine(
-            @Auth AuthUser user
+            @Parameter(hidden = true) @Auth AuthUser user
     ) {
         return ResponseEntity.ok(storeOwnerService.getStoresMine(user));
     }
@@ -46,7 +47,7 @@ public class StoreOwnerController {
     @PatchMapping("/owner/stores/{storeId}")
     @Operation(summary = "가게 정보 수정")
     public ResponseEntity<StoreResponse> updateStore(
-            @Auth AuthUser user,
+            @Parameter(hidden = true) @Auth AuthUser user,
             @PathVariable Long storeId,
             @Valid @RequestBody StoreUpdateRequest storeUpdateRequest
     ) {
@@ -57,10 +58,10 @@ public class StoreOwnerController {
     @DeleteMapping("/owner/stores/{storeId}")
     @Operation(summary = "가게 폐업 처리")
     public ResponseEntity<Void> shutDownStore(
-            @Auth AuthUser user,
+            @Parameter(hidden = true) @Auth AuthUser user,
             @PathVariable Long storeId
     ) {
-        storeOwnerService.shutDownStore(user,storeId);
+        storeOwnerService.shutDownStore(user, storeId);
         return ResponseEntity.noContent().build();
     }
 }
